@@ -1,10 +1,10 @@
 module.exports = (sequelize, type) => {
   return sequelize.define(
-    "employe",
+    "user",
     {
       id: {
         type: type.INTEGER,
-        field: "idEmploye",
+        field: "idUser",
         primaryKey: true,
         autoIncrement: true,
         unique: true,
@@ -16,7 +16,7 @@ module.exports = (sequelize, type) => {
       pwd: { type: type.STRING(10), field: "pwd" },
     },
     {
-      tableName: "Employe",
+      tableName: "user",
     }
   );
 };

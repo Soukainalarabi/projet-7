@@ -1,35 +1,40 @@
 const Sequelize = require("sequelize");
-const EmployeModel = require("./models/employe");
+const UserModel = require("./models/user");
 const CommentaireModel = require("./models/commentaire");
 const PublicationModel = require("./models/publication");
-
-const sequelize = new Sequelize("groupomania", "root", "root", {
-  host: "127.0.0.1",
-  dialect: "mysql",
-});
+const config = require("./config/config.json");
+const sequelize = new Sequelize(
+  config.db.database,
+  config.db.username,
+  config.db.password,
+  {
+    host: config.db.host,
+    dialect: config.db.dialect,
+  }
+);
 module.exports = sequelize;
 
-const Employe = EmployeModel(sequelize, Sequelize);
+const User = UserModel(sequelize, Sequelize);
 const Commentaire = CommentaireModel(sequelize, Sequelize);
 const Publication = PublicationModel(sequelize, Sequelize);
-Publication.belongsTo(Employe, {
-  as: "employe",
-  foreignKey: "idEmploye",
+Publication.belongsTo(User, {
+  as: "user",
+  foreignKey: "idUser",
 }); // publication();
-//Employe.hasMany(Publication)//employe.getPublications();
+//User.hasMany(Publication)//user.getPublications();
 Publication.hasMany(Commentaire, {
   as: "commentaires",
   foreignKey: "idPublication",
 });
-Commentaire.belongsTo(Employe, {
-  as: "employe",
-  foreignKey: "idEmploye",
+Commentaire.belongsTo(User, {
+  as: "user",
+  foreignKey: "idUser",
 });
 sequelize.sync().then(() => {
   console.log(`Database & tables created!`);
 });
 module.exports = {
-  Employe,
+  User,
   Publication,
   Commentaire,
 };
