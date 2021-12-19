@@ -1,50 +1,36 @@
-const Publication = require("../models/publication");
-const Commentaire = require("../models/commentaire");
+const {Publication} = require("../sequelize");
+const { Commentaire } = require("../sequelize");
 const fs = require("fs");
-//creer une publication
+
+////////creer une publication
 exports.createPublication = (req, res, next) => {
-  const object1 = JSON.parse(req.body.publication); 
-  //convertir le json à  un objet.
-  delete object1._id;
-  const publication = new Publication({
-    ...object,
-    commentaire: [],
-    imageUrl: `${req.protocol}
+  Publication.create ({
+    image: `${req.protocol}
       ://${req.get("host")} 
       /images/${req.file.filename}`,
-  });
-
-  publication
-    .save()
+    text: req.body.text
+  }
     .then(() => {
       res.status(201).json({
         message: "Post saved successfully!",
       });
-    })
+    }))
     .catch((error) => {
       res.status(400).json({
         error: error,
       });
     });
 };
-//creer un commentaire
+//////creer un commentaire
 exports.createCommentaire = (req, res, next) => {
-  const object2 = JSON.parse(req.body.publication.commentaire); //convertir le json à  un objet.
-
-  delete object2._id;
-  const commentaire = new Commentaire({
-    ...object,
-    commentaire: [],
-    Text: 0,
-  });
-
-  commentaire
-    .save()
+Commentaire.create ({
+    text: req.body.text
+  }
     .then(() => {
       res.status(201).json({
         message: "Post saved successfully!",
       });
-    })
+    }))
     .catch((error) => {
       res.status(400).json({
         error: error,
@@ -53,7 +39,7 @@ exports.createCommentaire = (req, res, next) => {
 };
 //recuperer toutes les publications
 exports.getAllPublications = (req, res, next) => {
-    Publication.find()
+    Publication.findAll()
       .then((publications) => {
         res.status(200).json(publications);
       })
@@ -66,7 +52,7 @@ exports.getAllPublications = (req, res, next) => {
   //recuperer une publication
 exports.getOnePublication = (req, res, next) => {
     Publication.findOne({
-      _id: req.params.id,
+       where: { id: req.body.id }
     })
       .then((publication) => {
         //si publication trouvé
@@ -82,34 +68,50 @@ exports.getOnePublication = (req, res, next) => {
 
 //modifier une publication
   exports.modifyPublication = (req, res, next) => {
-    const thingObject = req.file
-      ? //cet objet regarde si 'req.file' existe ou non .S'il existe, on traite la nouvelle image sinon on traite simplement l'objet entrant
-        {
-          ...JSON.parse(req.body.publication),
-          imageUrl: `${req.protocol}://${req.get("host")}/images/${
-            req.file.filename
-          }`,
-        }
-      : { ...req.body };
-    Publication.updateOne(
-      { _id: req.params.id },
-      { ...thingObject, _id: req.params.id }
-    )
+    Publication.findOne({
+      where: { id: req.body.id }})
+     .then((publication) => {
+        Publication.update({
+        image: `${req.protocol}
+          ://${req.get("host")} 
+          /images/${req.file.filename}`,
+        text: req.body.text},
+        { where:{
+        id: req.param.id
+      }
+      .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+      .catch((error) => res.status(400).json({ error }))
+  });
+})
+  .catch((error) => res.status(500).json({ error }));
+};
+  //////modifier un commentaire
+  exports.modifyCommentaire = (req, res, next) => {
+    Commentaire.findOne({
+      where: { id: req.params.idCom }})
+     .then((publication) => {
+    Commentaire.update({
+        text: req.body.text},{
+          where:{
+        id: req.param.idCom
+      }
+    })
       .then(() => res.status(200).json({ message: "Objet modifié !" }))
-      .catch((error) => res.status(400).json({ error }));
+      .catch((error) => res.status(400).json({ error }))
+    })
+    .catch((error) => res.status(500).json({ error }));
   };
-//supprimer une publication
+//////supprimer une publication
   exports.deletePublication = (req, res, next) => {
-    Publication.findOne({ _id: req.params.id })
-      .then((publication) => {
-        const filename = publication.imageUrl.split("/images/")[1]; // nous utilisons le fait de savoir que notre URL d'image contient un segment /images/ pour séparer le nom de fichier ;
-        fs.unlink(`images/${filename}`, () => {
-          // la fonction unlink du package fs pour supprimer ce fichier, en lui passant le fichier à supprimer et le callback à exécuter une fois ce fichier supprimé ;
-          Publication.deleteOne({ _id: req.params.id }) // dans le callback, nous implémentons la logique d'origine, en supprimant la sauce de la base de données.
-  
+    Publication.destroy({ 
+      where:{id: req.params.id }})  
             .then(() => res.status(200).json({ message: "Objet supprimé !" }))
             .catch((error) => res.status(400).json({ error }));
-        });
-      })
-      .catch((error) => res.status(500).json({ error }));
+  };
+  //supprimer un commentaire
+  exports.deleteCommentaire = (req, res, next) => {
+    Commentaire.destroy({ 
+      where:{id: req.params.idCom }})  
+            .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+            .catch((error) => res.status(400).json({ error }));
   };
