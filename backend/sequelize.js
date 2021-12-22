@@ -30,6 +30,11 @@ Commentaire.belongsTo(User, {
   as: "user",
   foreignKey: "idUser",
 });
+
+Commentaire.belongsTo(Publication, {
+  as: "publication",
+  foreignKey: "idPublication",
+});
 sequelize.sync().then(() => {
   console.log(`Database & tables created!`);
 });
