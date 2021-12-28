@@ -24,6 +24,7 @@
 .dropdown-item {
     display: flex;
     cursor: pointer;
+    align-items: center;
 }
 hr {
     margin: 0;
@@ -38,6 +39,7 @@ hr {
 .row {
     margin-left: 0;
     margin-top: 1%;
+    align-items: baseline;
 }
 
 .col-9 {
@@ -98,6 +100,7 @@ a {
 .list-group {
     justify-content: space-evenly !important;
 }
+
 i {
     padding-left: 0.5px;
 }
