@@ -3,7 +3,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const app = express();
 require("./sequelize");
-const { Sequelize } = require("sequelize");
 const userRoutes = require("./routes/user");
 const pubRoutes = require("./routes/publication");
 app.use(bodyParser.json());

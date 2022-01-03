@@ -1,0 +1,12 @@
+[{
+    "id": "integer",
+    "image": "String",
+    "text": "String",
+    "titre": "String",
+    "creationDate": "Date",
+    "user": {
+        "id": "integer",
+        "nom": "String",
+        "prenom": "String"
+    }
+}]

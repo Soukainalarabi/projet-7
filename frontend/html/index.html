@@ -55,7 +55,7 @@
         <hr>
         <main>
 
-            <div v-if(!publication)v-for class="card shadow-lg p-3 mb-5 bg-body raduis">
+            <div class="card shadow-lg p-3 mb-5 bg-body raduis" v-for="">
                 <div class="row ">
                     <div class="col-auto">
                         <img src="../image/images (1).jpeg" width=40px height=40px class="card-img-circle" alt="...">
@@ -74,13 +74,12 @@
                         repudiandae facere repellat..</p>
                     <img src="../image/images (1).jpeg" class="card-img" width="150px" alt="...">
                     <div class="d-flex justify-content-end">
-                        <a href="http://" class="commentaire-number">
+                        <a href="#" @click="afficherCommentaire" class="commentaire-number">
                             165 Commentaires
                         </a>
                     </div>
 
                     <hr>
-                    <!-- <div class="d-flex justify-content-evenly"> -->
                     <ul class="list-group list-group-horizontal">
                         <li class="list-group-item"><a href="publication.html" class="d-flex align-items-center">
                                 <i class="bi bi-hand-thumbs-up"></i>
@@ -120,9 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="comment-input"> <input type="text" class="form-control">
-                            <div class="fonts"> <i class="fa fa-camera"></i> </div>
-                        </div> -->
+
                     </div>
                 </div>
 
@@ -228,15 +225,6 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-        <script>
-            const app = new Vue({
-                el: ".row",
-                data: {
-                    user: "Soukaina Larabi",
-
-                }
-            })
-        </script>
 
 </body>
 

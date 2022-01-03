@@ -1,7 +1,7 @@
-const {Publication, User} = require("../sequelize");
-const { Commentaire } = require("../sequelize");
+const {Publication, User, Commentaire,USER_ALIAS} = require("../sequelize");
 const fs = require("fs");
 const publication = require("../models/publication");
+const {mapPublication,mapPublications}= require("./publication-mapping")
 
 ////////creer une publication
 exports.createPublication = (req, res, next) => {
@@ -9,7 +9,8 @@ exports.createPublication = (req, res, next) => {
    /* image: `${req.protocol}
       ://${req.get("host")} 
       /images/${req.file.filename}`,*/
-    text: req.body.text
+    text: req.body.text,
+    userId: req.body.userId
   })
     .then(() => {
       res.status(201).json({
@@ -45,9 +46,10 @@ Commentaire.create ({
 };
 //recuperer toutes les publications
 exports.getAllPublications = (req, res, next) => {
-    Publication.findAll()
+    Publication.findAll({
+      include: [ {model : User, as :USER_ALIAS}]})
       .then((publications) => {
-        res.status(200).json(publications);
+        res.status(200).json(mapPublications(publications));
       })
       .catch((error) => {
         res.status(400).json({
@@ -57,16 +59,20 @@ exports.getAllPublications = (req, res, next) => {
   };
   //recuperer une publication
 exports.getOnePublication = (req, res, next) => {
-    Publication.findOne({
-       where: { id: req.params.id }
-    },
-    {include: [Commentaire,User]})
+    Publication.findOne(
+    {
+      where: { id: req.params.id },
+      include: [ {model : User, as :USER_ALIAS},
+                 {model : Commentaire, as :"commentaires",
+                  include :{model : User, as :USER_ALIAS}}]})
       .then((publication) => {
         //si publication trouvé
-        res.status(200).json(publication);
+        console.log(publication);
+        res.status(200).json(mapPublication(publication));
       })
       .catch((error) => {
         // si publication no trouvé retourne 404
+        console.log(error);
         res.status(404).json({
           error: error,
         });

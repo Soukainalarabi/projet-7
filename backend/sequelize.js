@@ -13,12 +13,12 @@ const sequelize = new Sequelize(
   }
 );
 module.exports = sequelize;
-
+const USER_ALIAS="user";
 const User = UserModel(sequelize, Sequelize);
 const Commentaire = CommentaireModel(sequelize, Sequelize);
 const Publication = PublicationModel(sequelize, Sequelize);
 Publication.belongsTo(User, {
-  as: "user",
+  as: USER_ALIAS,
   foreignKey: "idUser",
 }); // publication();
 //User.hasMany(Publication)//user.getPublications();
@@ -27,14 +27,14 @@ Publication.hasMany(Commentaire, {
   foreignKey: "idPublication",
 });
 Commentaire.belongsTo(User, {
-  as: "user",
+  as: USER_ALIAS,
   foreignKey: "idUser",
 });
 
-Commentaire.belongsTo(Publication, {
+/*Commentaire.belongsTo(Publication, {
   as: "publication",
   foreignKey: "idPublication",
-});
+});*/
 sequelize.sync().then(() => {
   console.log(`Database & tables created!`);
 });
@@ -42,4 +42,5 @@ module.exports = {
   User,
   Publication,
   Commentaire,
+  USER_ALIAS
 };

@@ -26,6 +26,12 @@
     cursor: pointer;
     align-items: center;
 }
+.card-img-circle {
+    border-radius: 48%;
+}
+
+
+/*//////////////*/
 hr {
     margin: 0;
 }
@@ -53,9 +59,9 @@ hr {
     width: 100% !important;
     height: auto;
 }
-.card-img-circle {
+/* .card-img-circle {
     border-radius: 48%;
-}
+} */
 .rounded-image {
     border-radius: 48%;
 }
@@ -101,9 +107,9 @@ a {
     justify-content: space-evenly !important;
 }
 
-i {
+/* i {
     padding-left: 0.5px;
-}
+} */
 @media (max-width: 699px) {
     .d-flex {
         display: flex !important;
