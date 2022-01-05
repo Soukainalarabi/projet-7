@@ -6,13 +6,14 @@ const {mapPublication,mapPublications}= require("./publication-mapping")
 ////////creer une publication
 exports.createPublication = (req, res, next) => {
   Publication.create ({
-   /* image: `${req.protocol}
-      ://${req.get("host")} 
-      /images/${req.file.filename}`,*/
+    image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
     text: req.body.text,
-    userId: req.body.userId
+    title: req.body.title,
+    idUser:req.userId
+
+
   })
-    .then(() => {
+    .then((publications) => {
       res.status(201).json({
         message: "Post saved successfully!",
       });
@@ -27,13 +28,11 @@ exports.createPublication = (req, res, next) => {
 exports.createCommentaire = (req, res, next) => {
 Commentaire.create ({
     text: req.body.text,
-    //idPublication:req.params.id,
-    publication:{
-      id:req.params.id
-    }
+    idPublication:req.params.id,
+    idUser:req.userId
+
   })
   .then((com) => {
-    com.setPublication(req.params.id);
       res.status(201).json({
         message: "Post saved successfully!",
       });
@@ -66,12 +65,10 @@ exports.getOnePublication = (req, res, next) => {
                  {model : Commentaire, as :"commentaires",
                   include :{model : User, as :USER_ALIAS}}]})
       .then((publication) => {
-        //si publication trouvé
         console.log(publication);
         res.status(200).json(mapPublication(publication));
       })
       .catch((error) => {
-        // si publication no trouvé retourne 404
         console.log(error);
         res.status(404).json({
           error: error,

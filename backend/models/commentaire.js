@@ -11,7 +11,6 @@ module.exports = (sequelize, type) => {
       },
       text: { type: type.TEXT, field: "text" },
 
-      dateCommentaire: { type: type.DATE, field: "dateCommentaire" },
     },
     {
       tableName: "commentaire",

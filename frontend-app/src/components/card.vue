@@ -79,7 +79,7 @@
             height="30px"
           />
           <div class="d-flex flex-row ml-2 comment-text">
-            <p>Ecrivez un commentaire</p>
+            <textarea id="story" name="story">Ecrivez un commentaire... </textarea>
             <ul class="list-group list-group-vertical">
               <li class="list-group-item">
                 <a aria-label="Insérez un emoji" class="d-flex align-items-end">
@@ -104,8 +104,6 @@
               </li>
             </ul>
           </div>
-
-          <!-- ////////////////// -->
         </div>
       </div>
     </div>
@@ -228,6 +226,11 @@ span input {
   outline: none;
 
   display: block;
+}
+textarea {
+  background-color: #f5f5f5 !important;
+  border: none;
+  width: 92%;
 }
 .comment-text {
   border: 1px solid #c0c0c029;
