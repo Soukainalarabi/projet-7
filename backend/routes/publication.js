@@ -16,7 +16,7 @@ router.put("/:id/commentaire/:idCom", multer, pubCtrl.modifyCommentaire);
 
 router.delete("/:id", auth, multer, pubCtrl.deletePublication);
 router.delete(
-  "/:id/commentaire/:idComm",auth,
+  "/commentaire/:idCom",auth,
  
   multer,
   pubCtrl.deleteCommentaire

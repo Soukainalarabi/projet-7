@@ -3,6 +3,7 @@ const UserModel = require("./models/user");
 const CommentaireModel = require("./models/commentaire");
 const PublicationModel = require("./models/publication");
 const config = require("./config/config.json");
+const { Hooks } = require("sequelize/dist/lib/hooks");
 const sequelize = new Sequelize(
   config.db.database,
   config.db.username,
@@ -24,7 +25,9 @@ Publication.belongsTo(User, {
 //User.hasMany(Publication)//user.getPublications();
 Publication.hasMany(Commentaire, {
   as: "commentaires",
-  foreignKey: "idPublication",
+  foreignKey: {name:"idPublication", allowNull:false},
+  onDelete: 'cascade',
+  hooks:true
 });
 Commentaire.belongsTo(User, {
   as: USER_ALIAS,
@@ -35,7 +38,7 @@ Commentaire.belongsTo(User, {
   as: "publication",
   foreignKey: "idPublication",
 });*/
-sequelize.sync().then(() => {
+sequelize.sync({alter:true}).then(() => {
   console.log(`Database & tables created!`);
 });
 module.exports = {

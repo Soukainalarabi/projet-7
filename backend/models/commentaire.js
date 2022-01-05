@@ -10,6 +10,7 @@ module.exports = (sequelize, type) => {
         unique: true,
       },
       text: { type: type.TEXT, field: "text" },
+      image: { type: type.STRING(255), field: "image" },
 
     },
     {
