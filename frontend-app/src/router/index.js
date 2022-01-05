@@ -6,12 +6,12 @@ const routes = [
   {
     path: '/accueil',
     name: 'accueil',
-    component: () => import(/* webpackChunkName: "about" */ '../views/accueil.vue')
+    component: () => import('../views/accueil.vue')
   },
   {
     path: '/',
     name: 'acces',
-    component: () => import(/* webpackChunkName: "about" */ '../views/acces.vue')
+    component: () => import('../views/acces.vue')
   }
 ]
 

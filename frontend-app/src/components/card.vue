@@ -153,6 +153,9 @@ hr {
   display: flex;
   flex-direction: row;
 }
+.comment{
+  margin-top: 1%;
+}
 .card-img {
   width: 100% !important;
   height: auto;
