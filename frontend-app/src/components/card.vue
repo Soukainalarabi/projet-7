@@ -25,23 +25,11 @@
 
       <hr />
       <ul class="list-group list-group-horizontal">
-        <li class="list-group-item">
-          <a class="d-flex align-items-center">
-            <i class="bi bi-hand-thumbs-up"></i>
-            J'aime
-          </a>
-        </li>
         <li @click="postCommentShow = !postCommentShow" class="list-group-item">
           <button class="d-flex align-items-center">
             <i class="bi bi-messenger"></i>
             Commenter
           </button>
-        </li>
-        <li class="list-group-item">
-          <a class="d-flex align-items-center">
-            <i class="bi bi-share"></i>
-            Partager
-          </a>
         </li>
       </ul>
 
@@ -63,8 +51,6 @@
             <span class="name">{{ commentaire.userComnt }}</span>
             <small class="comment-text">{{ commentaire.comment }}</small>
             <div class="flex-row align-items-center status">
-              <small>J'aime</small>
-              <small>Répondre</small>
               <small>{{ commentaire.date }} </small>
             </div>
           </div>
@@ -79,14 +65,10 @@
             height="30px"
           />
           <div class="d-flex flex-row ml-2 comment-text">
-            <textarea id="story" name="story">Ecrivez un commentaire... </textarea>
+            <textarea id="story" name="story">
+Ecrivez un commentaire... </textarea
+            >
             <ul class="list-group list-group-vertical">
-              <li class="list-group-item">
-                <a aria-label="Insérez un emoji" class="d-flex align-items-end">
-                  <i class="bi bi-emoji-smile"></i>
-                  <!-- emoji -->
-                </a>
-              </li>
               <li class="list-group-item">
                 <span
                   aria-label="Insérez une image"
@@ -95,12 +77,6 @@
                   <i class="bi bi-image"></i><input type="file" />
                 </span>
                 <!-- picture -->
-              </li>
-              <li class="list-group-item">
-                <a class="d-flex align-items-end">
-                  <i class="bi bi-share"></i>
-                  <!-- Partager -->
-                </a>
               </li>
             </ul>
           </div>

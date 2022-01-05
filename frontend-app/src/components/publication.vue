@@ -4,7 +4,8 @@
     id="exampleModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -41,6 +42,7 @@
                 type="file"
                 class="form-control"
                 aria-label="file example"
+                accept=".jpg, .jpeg, .png, .gif"
                 required
               />
               <div class="invalid-feedback">
@@ -51,84 +53,6 @@
               <label for="message-text" class="col-form-label">Texte:</label>
               <textarea class="form-control" id="message-text"></textarea>
             </div>
-            <div class="row">
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/q3Q5A5e.gif"
-                  alt="Smiling Face With Heart-Eyes"
-                  title="Smiling Face With Heart-Eyes"
-                  width="34"
-                  height="34"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/v4eoLxA.png"
-                  alt="Eyes"
-                  title="Eyes"
-                  width="24"
-                  height="24"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/RVyqzqU.png"
-                  alt="Thinking Face"
-                  title="Thinking Face"
-                  width="24"
-                  height="24"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="kg-image image"
-                  src="https://i.imgur.com/EPxyW4M.gif"
-                  width="24"
-                  height="24"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/q3Q5A5e.gif"
-                  alt="Smiling Face With Heart-Eyes"
-                  title="Smiling Face With Heart-Eyes"
-                  width="34"
-                  height="34"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/ONLx0Eu.png"
-                  alt="Bell"
-                  title="Bell"
-                  width="24"
-                  height="24"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="image"
-                  src="https://i.imgur.com/v4eoLxA.png"
-                  alt="Eyes"
-                  title="Eyes"
-                  width="24"
-                  height="24"
-                />
-              </div>
-              <div class="col-auto example-block">
-                <img
-                  class="kg-image image"
-                  src="https://i.imgur.com/EPxyW4M.gif"
-                  width="24"
-                  height="24"
-                />
-              </div>
-            </div>
           </form>
         </div>
         <div class="modal-footer">
@@ -137,9 +61,9 @@
             class="btn btn-secondary"
             data-bs-dismiss="modal"
           >
-            Close
+            Fermer
           </button>
-          <button type="button" class="btn btn-primary">Send message</button>
+          <button type="button" class="btn btn-primary">Publier</button>
         </div>
       </div>
     </div>
