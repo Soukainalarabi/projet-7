@@ -1,53 +1,56 @@
 <template>
   <div class="text-center">
     <form class="form-signin">
-      <img
-        class="mb-4"
-        src="../assets/image/logo.png"
-        alt=""
-        width="72"
-        height="72"
-      />
-      <h1 class="h3 mb-3 font-weight-normal">Groupomania</h1>
-      <label for="inputEmail" class="sr-only"></label>
-      <input
-        type="email"
-        id="inputEmail"
-        class="form-control"
-        placeholder="Adresse e-mail "
-        required
-        autofocus
-      />
-      <label for="inputPassword" class="sr-only"></label>
-      <input
-        type="password"
-        id="inputPassword"
-        class="form-control"
-        placeholder="Mot de passe"
-        required
-      />
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me" /> Remember me
-        </label>
+      <div class="shadow p-3 mb-5 bg-body rounded">
+        <img
+          class="mb-4"
+          src="../assets/image/logo.png"
+          alt=""
+          width="72"
+          height="72"
+        />
+        <h1 class="h3 mb-3 font-weight-normal">Groupomania</h1>
+        <label for="inputEmail" class="sr-only"></label>
+        <input
+          type="email"
+          id="inputEmail"
+          class="form-control"
+          placeholder="Adresse e-mail "
+          required
+          autofocus
+        />
+        <label for="inputPassword" class="sr-only"></label>
+        <input
+          type="password"
+          id="inputPassword"
+          class="form-control"
+          placeholder="Mot de passe"
+          required
+        />
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me" /> Mémoriser le mot de
+            passe
+          </label>
+        </div>
+        <div class="d-flex flex-column">
+          <button
+            class="btn btn-outline-primary"
+            type="submit"
+            onclick=" window.location.href= '#/accueil' "
+          >
+            Se Connecter
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            type="submit"
+            onclick=" window.location.href= '#/accueil' "
+          >
+            S'Inscrire
+          </button>
+        </div>
+        <p class="mt-5 mb-3 text-muted">&copy; 2021-2022</p>
       </div>
-      <div class="d-flex flex-column">
-        <button
-          class="btn btn-outline-primary"
-          type="submit"
-          onclick=" window.location.href= '#/accueil' "
-        >
-          Se Connecter
-        </button>
-        <button
-          class="btn btn-outline-secondary"
-          type="submit"
-          onclick=" window.location.href= '#/accueil' "
-        >
-          S'Inscrire
-        </button>
-      </div>
-      <p class="mt-5 mb-3 text-muted">&copy; 2021-2022</p>
     </form>
   </div>
 </template>
@@ -82,9 +85,9 @@ body {
 
 .form-signin {
   width: 100%;
-  max-width: 330px;
+  max-width: 600px;
   padding: 15px;
-  margin: 0 auto;
+  margin: 15% auto;
 }
 .form-signin .checkbox {
   font-weight: 400;
