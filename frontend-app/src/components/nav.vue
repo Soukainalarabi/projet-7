@@ -48,7 +48,7 @@
         </li>
 
         <li>
-          <a href="http://localhost:8081/#/" class="dropdown-item"
+          <a href="../views/accueil.vue" class="dropdown-item"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -63,6 +63,11 @@
               />
             </svg>
             Déconnexion</a
+          >
+        </li>
+        <li>
+          <a href="../views/accueil.vue" class="dropdown-item text-danger"
+            ><i class="bi bi-trash"></i> Supprimer le compte</a
           >
         </li>
       </ul>

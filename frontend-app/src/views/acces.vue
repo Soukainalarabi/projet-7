@@ -31,14 +31,22 @@
           <input type="checkbox" value="remember-me" /> Remember me
         </label>
       </div>
-      <button
-        class="btn btn-lg btn-primary btn-block"
-        type="submit"
-        onclick=" window.location.href= '#/accueil' "
-      >
-        Se Connecter
-      </button>
-
+      <div class="d-flex flex-column">
+        <button
+          class="btn btn-outline-primary"
+          type="submit"
+          onclick=" window.location.href= '#/accueil' "
+        >
+          Se Connecter
+        </button>
+        <button
+          class="btn btn-outline-secondary"
+          type="submit"
+          onclick=" window.location.href= '#/accueil' "
+        >
+          S'Inscrire
+        </button>
+      </div>
       <p class="mt-5 mb-3 text-muted">&copy; 2021-2022</p>
     </form>
   </div>
@@ -101,10 +109,15 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-.btn-primary {
+.d-flex {
+  align-items: center;
+}
+.btn {
   color: #fff;
   background-color: #ffd7d7 !important;
   border-color: #ffd7d7 !important;
+  margin: 1%;
+  width: 50%;
 }
 
 .bd-placeholder-img {

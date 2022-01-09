@@ -13,11 +13,11 @@ exports.createPublication = (req, res, next) => {
   })
     .then((publications) => {
       res.status(201).json({
-        message: "Post saved successfully!",
+        message: "La publication est crée",
       });
     })
     .catch((error) => {
-      res.status(400).json({
+      res.status(500).json({
         error: error,
       });
     });
@@ -31,12 +31,12 @@ exports.createCommentaire = (req, res, next) => {
     idUser: req.userId
   })
     .then((com) => {
-      res.status(201).json({
-        message: "Post saved successfully!",
+      res.status(200).json({
+        message: "Le commentaire est crée",
       });
     })
     .catch((error) => {
-      res.status(400).json({
+      res.status(500).json({
         error: error,
       });
     });
@@ -50,7 +50,7 @@ exports.getAllPublications = (req, res, next) => {
       res.status(200).json(mapPublications(publications));
     })
     .catch((error) => {
-      res.status(400).json({
+      res.status(500).json({
         error: error,
       });
     });
@@ -72,7 +72,7 @@ exports.getOnePublication = (req, res, next) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(404).json({
+      res.status(500).json({
         error: error,
       });
     });
@@ -80,29 +80,46 @@ exports.getOnePublication = (req, res, next) => {
 
 //modifier une publication
 exports.modifyPublication = (req, res, next) => {
+
   Publication.findOne(
     {
       where: { id: req.params.id },
       include: [{ model: User, as: USER_ALIAS },
       {
         model: Commentaire, as: "commentaires",
-        include: { model: User, as: USER_ALIAS }
+        include: { model: User, as: USER_ALIAS, }
       }]
+
     })
+
     .then((publication) => {
-      Publication.update({
-        image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+
+      //Autoriser la modification uniquement à l'utilisateur qui l'a crée.
+
+      if (publication.user.id != req.userId) {
+        res.status(401).json({ message: "La modification de la publication n'est pas autorisée" });
+        return;
+      }
+      if (!req.body.title || !req.body.title.trim()) {
+        res.status(400).json({ message: "le titre ne devrait pas être vide" });
+        return;
+      }
+      let publicationToUpdate = {
         text: req.body.text,
         title: req.body.title
 
-      },
+      };
+      if (req.file) {
+        publicationToUpdate.image = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+      }
+      Publication.update(publicationToUpdate,
         {
           where: {
             id: req.params.id
           }
         })
-        .then(() => res.status(200).json({ message: "Objet modifié!" }))
-        .catch((error) => res.status(404).json({ error }));
+        .then(() => res.status(200).json({ message: "La publication est modifiée" }))
+        .catch((error) => res.status(500).json({ error }));
 
     })
     .catch((error) => res.status(500).json({ error }));
@@ -113,6 +130,14 @@ exports.modifyCommentaire = (req, res, next) => {
     where: { id: req.params.idCom }
   })
     .then(() => {
+      if (commentaire.user.id != req.userId) {
+        res.status(401).json({ message: "La modification du commentaire n'est pas autorisée" });
+        return;
+      }
+      if (!req.body.text || !req.body.text.trim()) {
+        res.status(400).json({ message: "Le commentaire ne devrait pas être vide" });
+        return;
+      }
       Commentaire.update({
         text: req.body.text
       }, {
@@ -120,8 +145,8 @@ exports.modifyCommentaire = (req, res, next) => {
           id: req.params.idCom
         }
       })
-        .then(() => res.status(200).json({ message: "Objet modifié !" }))
-        .catch((error) => res.status(400).json({ error }))
+        .then(() => res.status(200).json({ message: "Le commentaire a été modifié !" }))
+        .catch((error) => res.status(500).json({ error }))
     })
     .catch((error) => res.status(500).json({ error }));
 };
@@ -134,8 +159,8 @@ exports.deletePublication = (req, res, next) => {
       Publication.destroy({
         where: { id: req.params.id }
       })
-        .then(() => res.status(200).json({ message: "Objet supprimé !" }))
-        .catch((error) => res.status(400).json({ error }));
+        .then(() => res.status(200).json({ message: "La publication a été supprimée !" }))
+        .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
 };
@@ -148,7 +173,7 @@ exports.deleteCommentaire = (req, res, next) => {
       Commentaire.destroy({
         where: { id: req.params.idCom }
       })
-        .then(() => res.status(200).json({ message: "Objet supprimé !" }))
+        .then(() => res.status(200).json({ message: "Le commentaire a été supprimé !" }))
         .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(404).json({ error }));

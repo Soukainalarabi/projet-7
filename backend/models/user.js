@@ -12,10 +12,10 @@ module.exports = (sequelize, type) => {
       nom: { type: type.STRING(256), field: "nom" },
       prenom: { type: type.STRING(256), field: "prenom" },
 
-      email: { type: type.STRING(256), field: "email" },
+      email: { type: type.STRING(256), field: "email", unique: true },
       pwd: { type: type.STRING(256), field: "pwd" },
     },
-  
+
     {
       tableName: "user",
     }
