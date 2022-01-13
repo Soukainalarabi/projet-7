@@ -93,33 +93,20 @@ moment.locale("fr");
 export default {
   name: "Card",
   props: {},
-
+  created() {
+    let self = this;
+    this.$http
+      .get("http://localhost:3000/api/publications")
+      .then((publications) => {
+        self.publications = publications.data;
+      })
+      .catch((error) => console.log(error));
+  },
   data: function () {
     return {
       showModal: false,
       postCommentShow: false,
-
-      publications: [
-        {
-          user: "Soukaina Larabi",
-          userImage:
-            "https://www.parisgourmand.com/images/19-reveillons/reveillon-noel-nouvelle-an-t2.jpg",
-          titre: "hello world1",
-          text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-          image:
-            "https://www.parisgourmand.com/images/19-reveillons/reveillon-noel-nouvelle-an-t2.jpg",
-          date: moment("2022-01-02", "YYYY-MM-DD").fromNow(),
-          commentaires: [
-            {
-              userComnt: "Ayoub Erraji",
-              comment:
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-              imageUrl: require("../assets/image/profil.jpeg"),
-              date: moment("2022-01-03", "YYYY-MM-DD").fromNow(),
-            },
-          ],
-        },
-      ],
+      publications: [],
     };
   },
 };
@@ -153,7 +140,7 @@ hr {
   display: flex;
   flex-direction: row;
 }
-.comment{
+.comment {
   margin-top: 1%;
 }
 .card-img {

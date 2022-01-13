@@ -47,8 +47,8 @@
           <div id="name">Larabi Soukaina</div>
         </li>
 
-        <li>
-          <a href="../views/accueil.vue" class="dropdown-item"
+        <li @click="goToHome()">
+          <a class="dropdown-item"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -62,11 +62,12 @@
                 d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"
               />
             </svg>
+
             Déconnexion</a
           >
         </li>
         <li>
-          <a href="../views/accueil.vue" class="dropdown-item text-danger"
+          <a class="dropdown-item text-danger"
             ><i class="bi bi-trash"></i> Supprimer le compte</a
           >
         </li>
@@ -79,10 +80,16 @@
 export default {
   name: "Nav",
   props: {},
-  data: function () {
-    return {
-      url: window.location.acces,
-    };
+  methods: {
+    // deleteFind: function (index) {
+    //   console.log(index);
+    //   console.log(this.finds);
+    //   this.finds.splice(index);
+    // },
+
+    goToHome() {
+      this.$router.push("/login");
+    },
   },
 };
 </script>

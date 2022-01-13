@@ -4,21 +4,59 @@ const { User } = require("../sequelize");
 
 //la fonction signup:pour l'enregistrement des nv utilisateurs
 exports.signup = (req, res, next) => {
-  bcrypt
-    .hash(req.body.password, 10)
-    .then((hash) => {
-      User
-        .create({
-          nom:"ay",
-          prenom:"era",
-          email:req.body.email,
-          pwd: hash
+  const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+  let errors = [];
+  if (!req.body.email) {
+    errors.push("l'email est obligatoire");
+  }
+  if (!emailRegexp.test(req.body.email)) {
+    errors.push("le format d'email n'est pas bon");
+  }
+  if (!req.body.pwd || req.body.pwd.length < 6) {
+    errors.push("le mot de passe est obligatoire et il doit dépasser 6 charactères");
+  }
+  if (!req.body.firstName || !req.body.firstName.trim()) {
+    errors.push("Le Prénom est obligatoire");
+  }
+  if (!req.body.lastName || !req.body.lastName.trim()) {
+    errors.push("Le Nom est obligatoire");
+  }
+  if (errors.length > 0) {
+    return res.status(400).json({ errors: errors });
+  }
+  User.findOne(
+    { where: { email: req.body.email } })
+    .then((user) => {
+      if (user) {
+        res.status(400).json({
+          errors: ["l'email existe déja"]
+        });
+        return;
+      }
+      bcrypt
+        .hash(req.body.pwd, 10)
+        .then((hash) => {
+          User
+            .create({
+              nom: req.body.lastName,
+              prenom: req.body.firstName,
+              email: req.body.email,
+              pwd: hash,
+
+            })
+            .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
+            .catch((error) => res.status(400).json({ error }));
         })
-        .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(501).json({ error }));
+        .catch((error) => res.status(500).json({ error }));
+
+    }).catch((error) => res.status(500).json({ error }));
+
+
 };
+//pour supprimer un compte
+ 
+/////
 //la fonction login :pour connecter les utilisateur existant
 
 exports.login = (req, res, next) => {
@@ -26,10 +64,12 @@ exports.login = (req, res, next) => {
     { where: { email: req.body.email } })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        return res.status(401).json({
+          error: "Utilisateur non trouvé !"
+        });
       }
       bcrypt
-        .compare(req.body.password, user.pwd) //la fonction compare de bcrypt permet de comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données
+        .compare(req.body.pwd, user.pwd) //la fonction compare de bcrypt permet de comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données
         .then((valid) => {
           if (!valid) {
             return res.status(401).json({ error: "Mot de passe incorrect !" });

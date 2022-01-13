@@ -14,16 +14,18 @@
         <input
           type="email"
           id="inputEmail"
+          v-model="email"
           class="form-control"
           placeholder="Adresse e-mail "
           required
           autofocus
         />
-        <label for="inputPassword" class="sr-only"></label>
+        <label for="inputpwd" class="sr-only"></label>
         <input
           type="password"
-          id="inputPassword"
+          id="inputpwd"
           class="form-control"
+          v-model="pwd"
           placeholder="Mot de passe"
           required
         />
@@ -34,17 +36,19 @@
           </label>
         </div>
         <div class="d-flex flex-column">
+          <span style="color: red">{{ error }}</span>
+
           <button
             class="btn btn-outline-primary"
             type="submit"
-            onclick=" window.location.href= '#/accueil' "
+            @click="handleConnect"
           >
             Se Connecter
           </button>
           <button
             class="btn btn-outline-secondary"
             type="submit"
-            onclick=" window.location.href= '#/accueil' "
+            @click="goToHome()"
           >
             S'Inscrire
           </button>
@@ -60,6 +64,42 @@
 export default {
   name: "Home",
   components: {},
+  data() {
+    return {
+      email: "",
+      pwd: "",
+      error: "",
+    };
+  },
+  methods: {
+    goToHome() {
+      this.$router.push("/signup");
+    },
+    handleConnect: function (e) {
+      e.preventDefault();
+      var self = this;
+      if (this.pwd.length > 0) {
+        this.$http
+          .post("http://localhost:3000/api/auth/login", {
+            email: this.email,
+            pwd: this.pwd,
+          })
+          .then((response) => {
+            //localStorage.setItem("user", JSON.stringify(response.data.user));
+            localStorage.setItem("token", response.data.token);
+
+            if (localStorage.getItem("token") != null) {
+              this.$emit("loggedIn");
+              this.$router.push("accueil");
+            }
+          })
+          .catch(function (error) {
+            self.error = error.response.data.error;
+            console.error(error.response.data.error);
+          });
+      }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -102,12 +142,15 @@ body {
 .form-signin .form-control:focus {
   z-index: 2;
 }
+.shadow {
+  border-radius: 2%;
+}
 .form-signin input[type="email"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signin input[type="password"] {
+.form-signin input[type="pwd"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;

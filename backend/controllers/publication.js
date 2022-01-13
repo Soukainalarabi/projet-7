@@ -44,7 +44,11 @@ exports.createCommentaire = (req, res, next) => {
 //recuperer toutes les publications
 exports.getAllPublications = (req, res, next) => {
   Publication.findAll({
-    include: [{ model: User, as: USER_ALIAS }]
+    include: [{ model: User, as: USER_ALIAS },
+    {
+      model: Commentaire, as: "commentaires",
+      include: { model: User, as: USER_ALIAS }
+    }]
   })
     .then((publications) => {
       res.status(200).json(mapPublications(publications));
