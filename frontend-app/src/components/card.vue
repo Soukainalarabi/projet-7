@@ -6,17 +6,28 @@
   >
     <div class="row">
       <div class="col-auto">
-        <img :src="publication.userImage" class="card-img-circle" alt="..." />
+        <img
+          :src="$baseUrl + publication.user.image"
+          class="card-img-circle"
+          alt="..."
+        />
       </div>
-      <div class="col-auto nom">{{ publication.user }}</div>
-      <div class="col-auto">{{ publication.date }}</div>
+      <div class="col-auto nom">
+        {{ publication.user.nom + " " + publication.user.prenom }}
+      </div>
+      <div class="col-auto">{{ publication.createdAt }}</div>
     </div>
     <div class="card-body">
       <h5 class="card-title">{{ publication.titre }}</h5>
       <p class="card-text">
         {{ publication.text }}
       </p>
-      <img :src="publication.image" class="card-img" width="150px" alt="..." />
+      <img
+        :src="$baseUrl + publication.image"
+        class="card-img"
+        width="150px"
+        alt="..."
+      />
       <div class="d-flex justify-content-end">
         <button @click="showModal = !showModal" class="commentaire-number">
           {{ publication.commentaires.length }} commentaires
@@ -42,16 +53,19 @@
       >
         <div class="d-flex flex-row mb-2">
           <img
-            :src="commentaire.imageUrl"
+            :src="$baseUrl + commentaire.user.image"
             class="rounded-image"
             width="30px"
             height="30px"
           />
           <div class="d-flex flex-column ml-2">
-            <span class="name">{{ commentaire.userComnt }}</span>
-            <small class="comment-text">{{ commentaire.comment }}</small>
+            <span class="name">
+              <!-- //////il faut ajouter un nom et un prénom pour les commentaires -->
+              {{ commentaire.user.nom + " " + commentaire.user.prenom }}</span
+            >
+            <small class="comment-text">{{ commentaire.commentaire }}</small>
             <div class="flex-row align-items-center status">
-              <small>{{ commentaire.date }} </small>
+              <small>{{ commentaire.createdAt }} </small>
             </div>
           </div>
         </div>
@@ -59,13 +73,18 @@
       <div v-show="postCommentShow" class="comment">
         <div class="d-flex flex-row ml-2">
           <img
-            :src="publication.image"
+            :src="$baseUrl + userImageUrl"
             class="rounded-image"
             width="30px"
             height="30px"
           />
           <div class="d-flex flex-row ml-2 comment-text">
-            <textarea id="story" name="story">
+            <textarea
+              @click="publication.commentaireModel = ''"
+              id="story"
+              v-model="publication.commentaireModel"
+              name="story"
+            >
 Ecrivez un commentaire... </textarea
             >
             <ul class="list-group list-group-vertical">
@@ -74,7 +93,13 @@ Ecrivez un commentaire... </textarea
                   aria-label="Insérez une image"
                   class="d-flex align-items-end btn-file"
                 >
-                  <i class="bi bi-image"></i><input type="file" />
+                  <button
+                    @click="
+                      publier(publication.id, publication.commentaireModel)
+                    "
+                  >
+                    publier
+                  </button>
                 </span>
                 <!-- picture -->
               </li>
@@ -95,10 +120,20 @@ export default {
   props: {},
   created() {
     let self = this;
+    let pathApi = "/api/publications";
+    this.userImageUrl = localStorage.getItem("userImage");
     this.$http
-      .get("http://localhost:3000/api/publications")
+      .get(pathApi)
       .then((publications) => {
         self.publications = publications.data;
+        self.publications.forEach((pub) => {
+          pub.commentaireModel = "Ecrivez un commentaire...";
+          pub.createdAt = moment(pub.createdAt, "YYYY-MM-DD").fromNow();
+          pub.commentaires.forEach(
+            (com) =>
+              (com.createdAt = moment(com.createdAt, "YYYY-MM-DD").fromNow())
+          );
+        });
       })
       .catch((error) => console.log(error));
   },
@@ -106,8 +141,32 @@ export default {
     return {
       showModal: false,
       postCommentShow: false,
+      userImageUrl: "",
       publications: [],
     };
+  },
+  methods: {
+    publier: function (pubId, commentaire) {
+      console.log(pubId, commentaire);
+      // let self = this;
+      this.$http
+        .post(`/api/publications/${pubId}/commentaire`, {
+          text: commentaire,
+        })
+        .then(() => {
+          let publication = this.publications.find((pub) => pub.id == pubId);
+          publication.commentaires.push({
+            commentaire: commentaire,
+            createdAt: moment(Date.now()).fromNow(),
+            user: {
+              image: localStorage.getItem("userImage"),
+              nom: localStorage.getItem("nom"),
+              prenom: localStorage.getItem("prenom"),
+            },
+          });
+          publication.commentaireModel = "";
+        });
+    },
   },
 };
 </script>

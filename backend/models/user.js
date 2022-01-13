@@ -14,6 +14,8 @@ module.exports = (sequelize, type) => {
 
       email: { type: type.STRING(256), field: "email", unique: true },
       pwd: { type: type.STRING(256), field: "pwd" },
+      image: { type: type.STRING(700), field: "image" },
+
     },
 
     {

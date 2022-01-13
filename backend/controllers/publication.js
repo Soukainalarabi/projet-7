@@ -6,7 +6,7 @@ const { mapPublication, mapPublications } = require("./publication-mapping")
 ////////creer une publication
 exports.createPublication = (req, res, next) => {
   Publication.create({
-    image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    image: `images/${req.file.filename}`,
     text: req.body.text,
     title: req.body.title,
     idUser: req.userId
@@ -27,7 +27,7 @@ exports.createCommentaire = (req, res, next) => {
   Commentaire.create({
     text: req.body.text,
     idPublication: req.params.id,
-    image: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    // image: `/images/${req.file.filename}`,
     idUser: req.userId
   })
     .then((com) => {
@@ -114,7 +114,7 @@ exports.modifyPublication = (req, res, next) => {
 
       };
       if (req.file) {
-        publicationToUpdate.image = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+        publicationToUpdate.image = `images/${req.file.filename}`;
       }
       Publication.update(publicationToUpdate,
         {

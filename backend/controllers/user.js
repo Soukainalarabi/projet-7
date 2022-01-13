@@ -42,6 +42,7 @@ exports.signup = (req, res, next) => {
               nom: req.body.lastName,
               prenom: req.body.firstName,
               email: req.body.email,
+              image: req.file ? req.file.filename : "static/images/default-avatar.jpeg",
               pwd: hash,
 
             })
@@ -55,7 +56,7 @@ exports.signup = (req, res, next) => {
 
 };
 //pour supprimer un compte
- 
+
 /////
 //la fonction login :pour connecter les utilisateur existant
 
@@ -76,6 +77,9 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user.id,
+            imageUrl: user.image,
+            nom: user.nom,
+            prenom: user.prenom,
             token: jwt.sign({ userId: user.id }, "RANDOM_TOKEN_SECRET", {
               expiresIn: "24h",
               // nous utilisons la fonction sign de jsonwebtoken pour encoder un nouveau token ;

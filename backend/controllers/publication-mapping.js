@@ -4,10 +4,13 @@ mapPublication = function (publication) {
         image: publication.image,
         text: publication.text,
         title: publication.title,
+        createdAt: publication.createdAt,
         user: {
             id: publication.user.id,
             nom: publication.user.nom,
-            prenom: publication.user.prenom
+            prenom: publication.user.prenom,
+            image: publication.user.image
+
         },
         commentaires: mapCommentaires(publication.commentaires)
     }
@@ -27,10 +30,16 @@ function mapCommentaires(commentaires) {
         result.push({
             id: commentaire.id,
             commentaire: commentaire.text,
+            image: commentaire.image,
+
+            createdAt: commentaire.createdAt,
+
             user: {
                 id: commentaire.user.id,
                 nom: commentaire.user.nom,
-                prenom: commentaire.user.prenom
+                prenom: commentaire.user.prenom,
+                image: commentaire.user.image
+
             }
         })
 

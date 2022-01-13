@@ -80,13 +80,17 @@ export default {
       var self = this;
       if (this.pwd.length > 0) {
         this.$http
-          .post("http://localhost:3000/api/auth/login", {
+          .post("/api/auth/login", {
             email: this.email,
             pwd: this.pwd,
           })
           .then((response) => {
             //localStorage.setItem("user", JSON.stringify(response.data.user));
+            //response.userId
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userImage", response.data.imageUrl);
+            localStorage.setItem("nom", response.data.nom);
+            localStorage.setItem("prenom", response.data.prenom);
 
             if (localStorage.getItem("token") != null) {
               this.$emit("loggedIn");
