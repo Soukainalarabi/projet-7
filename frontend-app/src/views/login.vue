@@ -91,6 +91,7 @@ export default {
             localStorage.setItem("userImage", response.data.imageUrl);
             localStorage.setItem("nom", response.data.nom);
             localStorage.setItem("prenom", response.data.prenom);
+            localStorage.setItem("userId", response.data.userId);
 
             if (localStorage.getItem("token") != null) {
               this.$emit("loggedIn");

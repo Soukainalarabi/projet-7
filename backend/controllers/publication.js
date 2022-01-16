@@ -5,15 +5,20 @@ const { mapPublication, mapPublications } = require("./publication-mapping")
 
 ////////creer une publication
 exports.createPublication = (req, res, next) => {
-  Publication.create({
-    image: `images/${req.file.filename}`,
+  let publicationToCreate = {
     text: req.body.text,
     title: req.body.title,
     idUser: req.userId
-  })
-    .then((publications) => {
+
+  };
+  if (req.file) {
+    publicationToCreate.image = `images/${req.file.filename}`;
+  }
+  Publication.create(publicationToCreate)
+    .then((publication) => {
       res.status(201).json({
         message: "La publication est crée",
+        idPublication: publication.id,
       });
     })
     .catch((error) => {
@@ -33,6 +38,7 @@ exports.createCommentaire = (req, res, next) => {
     .then((com) => {
       res.status(200).json({
         message: "Le commentaire est crée",
+        idCommentaire: com.id
       });
     })
     .catch((error) => {
@@ -157,9 +163,15 @@ exports.modifyCommentaire = (req, res, next) => {
 //////supprimer une publication
 exports.deletePublication = (req, res, next) => {
   Publication.findOne({
-    where: { id: req.params.id }
+    where: { id: req.params.id },
+    include: { model: User, as: USER_ALIAS, }
+
   })
     .then((publication) => {
+      if (publication.user.id != req.userId) {
+        res.status(401).json({ message: "La suppression de la publication n'est pas autorisée" });
+        return;
+      }
       Publication.destroy({
         where: { id: req.params.id }
       })
@@ -171,9 +183,15 @@ exports.deletePublication = (req, res, next) => {
 //supprimer un commentaire
 exports.deleteCommentaire = (req, res, next) => {
   Commentaire.findOne({
-    where: { id: req.params.idCom }
+    where: { id: req.params.idCom },
+    include: { model: User, as: USER_ALIAS, }
+
   })
     .then((commentaire) => {
+      if (commentaire.user.id != req.userId) {
+        res.status(401).json({ message: "La suppression du commentaire n'est pas autorisée" });
+        return;
+      }
       Commentaire.destroy({
         where: { id: req.params.idCom }
       })

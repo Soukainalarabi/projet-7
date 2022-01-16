@@ -19,7 +19,7 @@
       <button
         class="btn btn-secondary dropdown-toggle"
         type="button"
-        id="dropdownMenuButton1"
+        id="dropdownMenuButton"
         data-bs-toggle="dropdown"
         aria-expanded="false"
       >
@@ -30,7 +30,8 @@
           height="40px"
         />
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+
+      <ul class="dropdown-menu">
         <li class="dropdown-item" href="#">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -67,11 +68,67 @@
           >
         </li>
         <li>
-          <a class="dropdown-item text-danger"
+          <!-- <a @click="supprimerCompte()" class="dropdown-item text-danger"
             ><i class="bi bi-trash"></i> Supprimer le compte</a
+          > -->
+          <button
+            class="btn text-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModalCenter"
           >
+            <i class="bi bi-trash"></i>
+            Supprimer le compte
+          </button>
         </li>
       </ul>
+    </div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" color="red" id="exampleModalLongTitle">
+              La suppression du compte
+            </h5>
+
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Êtes-vous sur de vouloir supprimer votre compte?
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-warning"
+              data-bs-dismiss="modal"
+            >
+              Non
+            </button>
+            <button
+              @click="supprimerCompte()"
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Oui
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
@@ -98,11 +155,17 @@ export default {
     goLogin() {
       //vider local storage
       localStorage.removeItem("token");
-
+      localStorage.removeItem("userId");
       localStorage.removeItem("userImage");
       localStorage.removeItem("nom");
       localStorage.removeItem("prenom");
       this.$router.push("/login");
+    },
+    supprimerCompte() {
+      this.$http.delete(`/api/auth/user`).then(() => {
+        console.log("publication supprimer");
+        this.goLogin();
+      });
     },
   },
 };

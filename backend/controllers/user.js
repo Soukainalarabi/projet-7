@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt"); //le package de chiffrement bcrypt
 const jwt = require("jsonwebtoken"); //ce package va nous permettre de creer les TOKEN et les verifier
-const { User } = require("../sequelize");
+const { Publication, User, Commentaire } = require("../sequelize");
+
 
 //la fonction signup:pour l'enregistrement des nv utilisateurs
 exports.signup = (req, res, next) => {
@@ -56,7 +57,27 @@ exports.signup = (req, res, next) => {
 
 };
 //pour supprimer un compte
+exports.deleteUser = (req, res, next) => {
+  User.findOne({
+    where: { id: req.userId }
 
+  })
+    .then(() => {
+      Commentaire.destroy({
+        where: { idUser: req.userId }
+      }).then(() => Publication.destroy({
+        where: { idUser: req.userId }
+      }).then(() => User.destroy({
+        where: { id: req.userId }
+      })
+        .then(() => res.status(200).json({ message: "Le compte a été supprimée !" }))
+        .catch((error) => res.status(500).json({ error })))
+        .catch((error) => res.status(500).json({ error })))
+        .catch((error) => res.status(500).json({ error }));
+
+    })
+    .catch((error) => res.status(500).json({ error }));
+};
 /////
 //la fonction login :pour connecter les utilisateur existant
 

@@ -16,27 +16,65 @@
         {{ publication.user.nom + " " + publication.user.prenom }}
       </div>
       <div class="col-auto">{{ publication.createdAt }}</div>
+
+      <div class="col">
+        <div
+          v-if="publication.user.id == userId"
+          class="dropdown padding-left: 89%"
+        >
+          <button
+            class="btn-secondary"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <a class="dropdown-item text-danger"> modifier</a>
+            </li>
+
+            <li>
+              <a
+                @click="supprimerPub(publication.id)"
+                class="dropdown-item text-danger"
+              >
+                Supprimer</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="card-body">
-      <h5 class="card-title">{{ publication.titre }}</h5>
+      <h5 class="card-title">{{ publication.title }}</h5>
       <p class="card-text">
         {{ publication.text }}
       </p>
       <img
+        v-if="publication.image"
         :src="$baseUrl + publication.image"
         class="card-img"
         width="150px"
         alt="..."
       />
       <div class="d-flex justify-content-end">
-        <button @click="showModal = !showModal" class="commentaire-number">
+        <button
+          class="commentaire-number"
+          @click="publication.showModal = !publication.showModal"
+        >
           {{ publication.commentaires.length }} commentaires
         </button>
       </div>
 
       <hr />
       <ul class="list-group list-group-horizontal">
-        <li @click="postCommentShow = !postCommentShow" class="list-group-item">
+        <li
+          @click="publication.postCommentShow = !publication.postCommentShow"
+          class="list-group-item"
+        >
           <button class="d-flex align-items-center">
             <i class="bi bi-messenger"></i>
             Commenter
@@ -46,7 +84,7 @@
 
       <hr />
       <div
-        v-show="showModal"
+        v-show="publication.showModal"
         class="comments"
         v-for="commentaire of publication.commentaires"
         v-bind:key="commentaire"
@@ -66,11 +104,20 @@
             <small class="comment-text">{{ commentaire.commentaire }}</small>
             <div class="flex-row align-items-center status">
               <small>{{ commentaire.createdAt }} </small>
+
+              <small v-if="commentaire.user.id == userId">
+                <button @click="supprimer(idCom)">Modifier</button>
+              </small>
+              <small v-if="commentaire.user.id == userId">
+                <button @click="supprimerCom(commentaire.id, publication.id)">
+                  Supprimer
+                </button>
+              </small>
             </div>
           </div>
         </div>
       </div>
-      <div v-show="postCommentShow" class="comment">
+      <div v-show="publication.postCommentShow" class="comment">
         <div class="d-flex flex-row ml-2">
           <img
             :src="$baseUrl + userImageUrl"
@@ -109,25 +156,35 @@ Ecrivez un commentaire... </textarea
       </div>
     </div>
   </div>
+  <Publication @publicationCreated="addPublication($event)" />
 </template>
 
 <script>
 import moment from "moment";
+import Publication from "@/components/publication.vue";
+
 moment.locale("fr");
 
 export default {
   name: "Card",
   props: {},
+  components: {
+    Publication,
+  },
   created() {
     let self = this;
     let pathApi = "/api/publications";
     this.userImageUrl = localStorage.getItem("userImage");
+    this.userId = localStorage.getItem("userId");
+
     this.$http
       .get(pathApi)
       .then((publications) => {
         self.publications = publications.data;
         self.publications.forEach((pub) => {
           pub.commentaireModel = "Ecrivez un commentaire...";
+          pub.postCommentShow = false; // pour afficher juste le commrntaire de la publication
+          pub.showModal = false;
           pub.createdAt = moment(pub.createdAt, "YYYY-MM-DD").fromNow();
           pub.commentaires.forEach(
             (com) =>
@@ -140,34 +197,69 @@ export default {
   data: function () {
     return {
       showModal: false,
-      postCommentShow: false,
       userImageUrl: "",
+      userId: "",
       publications: [],
     };
   },
   methods: {
+    addPublication: function (publication) {
+      this.publications.push(publication);
+    },
     publier: function (pubId, commentaire) {
-      console.log(pubId, commentaire);
-      // let self = this;
+      let comntModel = "Ecrivez un commentaire...";
+      let publication = this.publications.find((pub) => pub.id == pubId);
+      if (
+        !publication.commentaireModel ||
+        publication.commentaireModel == comntModel
+      ) {
+        return;
+      }
       this.$http
         .post(`/api/publications/${pubId}/commentaire`, {
           text: commentaire,
         })
-        .then(() => {
-          let publication = this.publications.find((pub) => pub.id == pubId);
+        .then((response) => {
           publication.commentaires.push({
+            id: response.data.idCommentaire,
             commentaire: commentaire,
             createdAt: moment(Date.now()).fromNow(),
             user: {
+              id: this.userId,
               image: localStorage.getItem("userImage"),
               nom: localStorage.getItem("nom"),
               prenom: localStorage.getItem("prenom"),
             },
           });
-          publication.commentaireModel = "";
+
+          publication.commentaireModel = comntModel;
         });
     },
+    supprimerCom: function (idCommentaire, pubId) {
+      let publication = this.publications.find((pub) => pub.id == pubId);
+      this.$http
+        .delete(`/api/publications/commentaire/${idCommentaire}`)
+        .then(() => {
+          publication.commentaires = publication.commentaires.filter(
+            (com) => com.id != idCommentaire
+          );
+          console.log("supprimé");
+        });
+    },
+    supprimerPub: function (pubId) {
+      this.$http.delete(`/api/publications/${pubId}`).then(() => {
+        this.publications = this.publications.filter((pub) => pub.id != pubId);
+        console.log("publication supprimer");
+      });
+    },
+
+    // affichageComnt: function (pubId) {
+    //   if (this.publication.id != pubId) {
+    //     publication.commentaireModel;
+    //   }
+    // },
   },
+  // supprimer
 };
 </script>
 
@@ -175,6 +267,9 @@ export default {
 <style scoped>
 hr {
   margin: 0;
+}
+.btn-secondary {
+  color: black;
 }
 .card {
   margin-right: auto;
@@ -188,7 +283,9 @@ hr {
   margin-top: 1%;
   align-items: baseline;
 }
-
+.dropdown {
+  padding-left: 89%;
+}
 .col-9 {
   padding-left: 0px;
 }
