@@ -41,16 +41,13 @@
                 id="recipient-name"
               />
             </div>
-            <div class="mb-3">
-              <input
-                type="file"
-                class="form-control"
-                aria-label="file example"
-                accept=".jpg, .jpeg, .png, .gif"
-              />
-              <div class="invalid-feedback">
-                Example invalid form file feedback
-              </div>
+            <div v-if="!image">
+              <p>Choisir une image :</p>
+              <input type="file" @change="onFileChange" />
+            </div>
+            <div v-else>
+              <img class="imageFile" :src="image" />
+              <button @click="removeImage">Remove image</button>
             </div>
             <div class="mb-3">
               <label for="message-text" class="col-form-label">Texte:</label>
@@ -70,7 +67,14 @@
           >
             Fermer
           </button>
-          <button type="button" class="btn btn-primary" @click="creerPub()">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            @click="
+              closeModal();
+              creerPub();
+            "
+          >
             Publier
           </button>
         </div>
@@ -81,6 +85,8 @@
 
 <script>
 import moment from "moment";
+import $ from "jquery";
+
 //import { Modal } from "bootstrap";
 
 moment.locale("fr");
@@ -89,37 +95,48 @@ export default {
   props: {},
   data() {
     return {
+      modal: null,
+
       user: {
         imageUser: localStorage.getItem("userImage"),
 
         nom: localStorage.getItem("nom"),
         prenom: localStorage.getItem("prenom"),
       },
-      // image: `images/${req.file.filename}`,
+      image: "",
       title: "",
       text: "",
+      imageFile: null,
     };
   },
   methods: {
     creerPub: function () {
-      console.log("ee");
       let pathApi = "/api/publications";
       let publication = {
         text: this.text,
+        image: this.image,
+
         title: this.title,
       };
       if (!publication.title && !publication.text) {
         return;
       }
 
+      const formData = new FormData();
+      formData.append("text", this.text);
+      formData.append("title", this.title);
+      if (this.imageFile) {
+        formData.append("image", this.imageFile, this.imageFile.name);
+      }
       this.$http
-        .post(pathApi, publication)
+        .post(pathApi, formData)
 
         .then((response) => {
           let publicationToAdd = {
             id: response.data.idPublication,
             createdAt: moment(Date.now()).fromNow(),
             text: this.text,
+            image: response.data.image,
             title: this.title,
             commentaires: [],
             user: {
@@ -132,9 +149,38 @@ export default {
 
           //var myModal = new Modal(document.getElementById//("exampleModal"));
           //myModal.hide();
-
+          this.imageFile = null;
           this.$emit("publicationCreated", publicationToAdd);
         });
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      // var image = new Image();
+      this.imageFile = file;
+      var reader = new FileReader();
+      var self = this;
+
+      reader.onload = (e) => {
+        self.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage: function () {
+      this.image = "";
+    },
+    //modal dismis ////////
+    save() {
+      $("#ModalId").modal("hide");
+      this.$emit("save");
+    },
+    closeModal: function () {
+      if (this.title && this.text) {
+        this.modal = "false";
+      }
     },
   },
 };
@@ -145,7 +191,13 @@ export default {
 h3 {
   margin: 40px 0 0;
 }
-img {
+.imageFile {
+  width: 50%;
+  margin: auto;
+  display: block;
+  margin-bottom: 10px;
+}
+.card-img-circle {
   width: 30px !important;
   height: 30px !important;
 }

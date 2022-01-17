@@ -8,6 +8,8 @@ exports.createPublication = (req, res, next) => {
   let publicationToCreate = {
     text: req.body.text,
     title: req.body.title,
+    image: req.body.image,
+
     idUser: req.userId
 
   };
@@ -19,6 +21,7 @@ exports.createPublication = (req, res, next) => {
       res.status(201).json({
         message: "La publication est crée",
         idPublication: publication.id,
+        image: publication.image,
       });
     })
     .catch((error) => {
@@ -50,6 +53,7 @@ exports.createCommentaire = (req, res, next) => {
 //recuperer toutes les publications
 exports.getAllPublications = (req, res, next) => {
   Publication.findAll({
+    order: [["createdAt", "DESC"]],
     include: [{ model: User, as: USER_ALIAS },
     {
       model: Commentaire, as: "commentaires",
@@ -137,7 +141,9 @@ exports.modifyPublication = (req, res, next) => {
 //////modifier un commentaire
 exports.modifyCommentaire = (req, res, next) => {
   Commentaire.findOne({
-    where: { id: req.params.idCom }
+    where: { id: req.params.idCom },
+    include: { model: User, as: USER_ALIAS, }
+
   })
     .then(() => {
       if (commentaire.user.id != req.userId) {

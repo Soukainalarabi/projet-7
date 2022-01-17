@@ -252,6 +252,19 @@ export default {
         console.log("publication supprimer");
       });
     },
+    modifierPub: function (pubId) {
+      let publication = {
+        text: localStorage.getItem("text"),
+        image: localStorage.getItem("image"),
+
+        title: localStorage.getItem("title"),
+      };
+      this.$http.put(`/api/publications/${pubId}`, publication).then(() => {
+        this.publications = this.publications.filter((pub) => pub.id != pubId);
+
+        console.log("publication supprimer");
+      });
+    },
 
     // affichageComnt: function (pubId) {
     //   if (this.publication.id != pubId) {
