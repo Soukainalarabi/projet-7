@@ -132,7 +132,11 @@ exports.modifyPublication = (req, res, next) => {
             id: req.params.id
           }
         })
-        .then(() => res.status(200).json({ message: "La publication est modifiée" }))
+        .then(() => res.status(200).json({
+          message: "La publication est modifiée",
+          //on retourne l'image de la publication qu'on a modifié si elle est saisi sinon on récupère l'ancienn image stockée dans la base des données
+          image: publicationToUpdate.image ? publicationToUpdate.image : publication.image
+        }))
         .catch((error) => res.status(500).json({ error }));
 
     })

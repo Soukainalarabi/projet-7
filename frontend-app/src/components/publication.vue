@@ -2,7 +2,7 @@
   <div
     class="modal fade"
     id="exampleModal"
-    ref="pubModal"
+    ref="exampleModal"
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
@@ -60,20 +60,13 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-secondary" @click="closeModal()">
             Fermer
           </button>
           <button
             type="submit"
             class="btn btn-primary"
-            @click="
-              closeModal();
-              creerPub();
-            "
+            @click="createOrUpdatePub()"
           >
             Publier
           </button>
@@ -85,24 +78,28 @@
 
 <script>
 import moment from "moment";
-import $ from "jquery";
-
-//import { Modal } from "bootstrap";
+import { Modal } from "bootstrap";
 
 moment.locale("fr");
 export default {
   name: "Publication",
   props: {},
+  mounted() {
+    this.modal = new Modal(this.$refs.exampleModal);
+  },
   data() {
     return {
+      pathApi: "/api/publications",
       modal: null,
-
       user: {
         imageUser: localStorage.getItem("userImage"),
-
+        id: localStorage.getItem("userId"),
         nom: localStorage.getItem("nom"),
         prenom: localStorage.getItem("prenom"),
       },
+
+      pubId: null,
+      createdAt: null,
       image: "",
       title: "",
       text: "",
@@ -110,8 +107,41 @@ export default {
     };
   },
   methods: {
-    creerPub: function () {
-      let pathApi = "/api/publications";
+    makePubVue: function (pubId, image) {
+      let publicationToAdd = {
+        id: pubId,
+        creationDate: this.createdAt
+          ? moment(this.createdAt).toDate()
+          : moment(Date.now()).toDate(),
+        createdAt: this.createdAt
+          ? moment(this.createdAt).fromNow()
+          : moment(Date.now()).fromNow(),
+        text: this.text,
+        image: image,
+        title: this.title,
+        commentaires: [],
+        user: {
+          id: localStorage.getItem("userId"),
+          image: localStorage.getItem("userImage"),
+          nom: localStorage.getItem("nom"),
+          prenom: localStorage.getItem("prenom"),
+        },
+      };
+
+      this.imageFile = null;
+      this.$emit("publicationCreated", publicationToAdd);
+
+      //réinitialiser les params de modal
+      this.pubId = null;
+      this.createdAt = null;
+      this.image = "";
+      this.title = "";
+      this.text = "";
+      this.imageFile = null;
+
+      this.closeModal();
+    },
+    createOrUpdatePub: function () {
       let publication = {
         text: this.text,
         image: this.image,
@@ -128,30 +158,19 @@ export default {
       if (this.imageFile) {
         formData.append("image", this.imageFile, this.imageFile.name);
       }
+      if (this.pubId) {
+        this.$http
+          .put(`${this.pathApi}/${this.pubId}`, formData)
+
+          .then((response) => this.makePubVue(this.pubId, response.data.image));
+        return;
+      }
       this.$http
-        .post(pathApi, formData)
+        .post(this.pathApi, formData)
 
-        .then((response) => {
-          let publicationToAdd = {
-            id: response.data.idPublication,
-            createdAt: moment(Date.now()).fromNow(),
-            text: this.text,
-            image: response.data.image,
-            title: this.title,
-            commentaires: [],
-            user: {
-              id: this.userId,
-              image: localStorage.getItem("userImage"),
-              nom: localStorage.getItem("nom"),
-              prenom: localStorage.getItem("prenom"),
-            },
-          };
-
-          //var myModal = new Modal(document.getElementById//("exampleModal"));
-          //myModal.hide();
-          this.imageFile = null;
-          this.$emit("publicationCreated", publicationToAdd);
-        });
+        .then((response) =>
+          this.makePubVue(response.data.idPublication, response.data.image)
+        );
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -174,13 +193,21 @@ export default {
     },
     //modal dismis ////////
     save() {
-      $("#ModalId").modal("hide");
-      this.$emit("save");
+      /* $("#ModalId").modal("hide");
+      this.$emit("save");*/
+    },
+    openModal: function () {
+      this.modal.show();
+    },
+    openModalModification: function (publication) {
+      this.pubId = publication.id;
+      this.title = publication.title;
+      this.text = publication.text;
+      this.createdAt = publication.creationDate;
+      this.modal.show();
     },
     closeModal: function () {
-      if (this.title && this.text) {
-        this.modal = "false";
-      }
+      this.modal.hide();
     },
   },
 };

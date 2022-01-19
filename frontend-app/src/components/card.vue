@@ -33,7 +33,12 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
             <li>
-              <a class="dropdown-item text-danger"> modifier</a>
+              <a
+                class="dropdown-item text-danger"
+                @click="openModalModification(publication)"
+              >
+                modifier</a
+              >
             </li>
 
             <li>
@@ -156,7 +161,10 @@ Ecrivez un commentaire... </textarea
       </div>
     </div>
   </div>
-  <Publication @publicationCreated="addPublication($event)" />
+  <Publication
+    ref="publicationModal"
+    @publicationCreated="addPublication($event)"
+  />
 </template>
 
 <script>
@@ -185,11 +193,21 @@ export default {
           pub.commentaireModel = "Ecrivez un commentaire...";
           pub.postCommentShow = false; // pour afficher juste le commrntaire de la publication
           pub.showModal = false;
-          pub.createdAt = moment(pub.createdAt, "YYYY-MM-DD").fromNow();
-          pub.commentaires.forEach(
-            (com) =>
-              (com.createdAt = moment(com.createdAt, "YYYY-MM-DD").fromNow())
-          );
+          pub.creationDate = moment(
+            pub.createdAt,
+            this.$datetimeFormat
+          ).toDate();
+          pub.createdAt = moment(pub.createdAt, this.$datetimeFormat).fromNow();
+          pub.commentaires.forEach((com) => {
+            com.creationDate = moment(
+              com.createdAt,
+              this.$datetimeFormat
+            ).toDate();
+            com.createdAt = moment(
+              com.createdAt,
+              this.$datetimeFormat
+            ).fromNow();
+          });
         });
       })
       .catch((error) => console.log(error));
@@ -203,8 +221,16 @@ export default {
     };
   },
   methods: {
+    openModalModification: function (publication) {
+      this.$refs.publicationModal.openModalModification(publication);
+    },
     addPublication: function (publication) {
-      this.publications.push(publication);
+      let newPublications = this.publications
+        .filter((pub) => pub.id != publication.id)
+        .concat([publication]);
+      this.publications = newPublications.sort(
+        (a, b) => b.creationDate - a.creationDate
+      );
     },
     publier: function (pubId, commentaire) {
       let comntModel = "Ecrivez un commentaire...";
@@ -223,6 +249,7 @@ export default {
           publication.commentaires.push({
             id: response.data.idCommentaire,
             commentaire: commentaire,
+            creationDate: Date.now(),
             createdAt: moment(Date.now()).fromNow(),
             user: {
               id: this.userId,
@@ -252,25 +279,6 @@ export default {
         console.log("publication supprimer");
       });
     },
-    modifierPub: function (pubId) {
-      let publication = {
-        text: localStorage.getItem("text"),
-        image: localStorage.getItem("image"),
-
-        title: localStorage.getItem("title"),
-      };
-      this.$http.put(`/api/publications/${pubId}`, publication).then(() => {
-        this.publications = this.publications.filter((pub) => pub.id != pubId);
-
-        console.log("publication supprimer");
-      });
-    },
-
-    // affichageComnt: function (pubId) {
-    //   if (this.publication.id != pubId) {
-    //     publication.commentaireModel;
-    //   }
-    // },
   },
   // supprimer
 };

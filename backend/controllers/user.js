@@ -64,9 +64,9 @@ exports.deleteUser = (req, res, next) => {
   })
     .then(() => {
       Commentaire.destroy({
-        where: { idUser: req.userId }
+        where: { userId: req.userId }
       }).then(() => Publication.destroy({
-        where: { idUser: req.userId }
+        where: { userId: req.userId }
       }).then(() => User.destroy({
         where: { id: req.userId }
       })
@@ -78,10 +78,13 @@ exports.deleteUser = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
-/////
-//la fonction login :pour connecter les utilisateur existant
-
+///////la fonction login :pour connecter les utilisateur existant
 exports.login = (req, res, next) => {
+  if (!req.body.email || !req.body.email.trim()) {
+    return res.status(401).json({
+      error: "Veuillez saisir votre email!"
+    });
+  }
   User.findOne(
     { where: { email: req.body.email } })
     .then((user) => {

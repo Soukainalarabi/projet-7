@@ -59,8 +59,9 @@
             required="required"
           />
         </div>
+
         <span v-if="error.pwdNoValid" style="color: red"
-          >Le mot de passe n'est pas valide: la taille devrait etre supérieur à
+          >Le mot de passe n'est pas valide: la taille devrait être supérieur à
           6</span
         >
         <span v-for="err of error.backend" v-bind:key="err" style="color: red">
@@ -93,6 +94,7 @@ export default {
       is_admin: null,
       error: {
         pwdNoValid: false,
+
         backend: [],
       },
     };
