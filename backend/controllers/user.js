@@ -15,7 +15,7 @@ exports.signup = (req, res, next) => {
     errors.push("le format d'email n'est pas bon");
   }
   if (!req.body.pwd || req.body.pwd.length < 6) {
-    errors.push("le mot de passe est obligatoire et il doit dépasser 6 charactères");
+    errors.push("le mot de passe est obligatoire et il doit dépasser 6 caractères");
   }
   if (!req.body.firstName || !req.body.firstName.trim()) {
     errors.push("Le Prénom est obligatoire");

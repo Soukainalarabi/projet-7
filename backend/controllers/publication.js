@@ -10,7 +10,7 @@ exports.createPublication = (req, res, next) => {
     title: req.body.title,
     image: req.body.image,
 
-    idUser: req.userId
+    userId: req.userId
 
   };
   if (req.file) {
@@ -36,7 +36,7 @@ exports.createCommentaire = (req, res, next) => {
     text: req.body.text,
     idPublication: req.params.id,
     // image: `/images/${req.file.filename}`,
-    idUser: req.userId
+    userId: req.userId
   })
     .then((com) => {
       res.status(200).json({
@@ -144,20 +144,21 @@ exports.modifyPublication = (req, res, next) => {
 };
 //////modifier un commentaire
 exports.modifyCommentaire = (req, res, next) => {
+  if (!req.body.text || !req.body.text.trim()) {
+    res.status(400).json({ message: "Le commentaire ne devrait pas être vide" });
+    return;
+  }
   Commentaire.findOne({
     where: { id: req.params.idCom },
     include: { model: User, as: USER_ALIAS, }
 
   })
-    .then(() => {
+    .then((commentaire) => {
       if (commentaire.user.id != req.userId) {
         res.status(401).json({ message: "La modification du commentaire n'est pas autorisée" });
         return;
       }
-      if (!req.body.text || !req.body.text.trim()) {
-        res.status(400).json({ message: "Le commentaire ne devrait pas être vide" });
-        return;
-      }
+
       Commentaire.update({
         text: req.body.text
       }, {
@@ -166,9 +167,9 @@ exports.modifyCommentaire = (req, res, next) => {
         }
       })
         .then(() => res.status(200).json({ message: "Le commentaire a été modifié !" }))
-        .catch((error) => res.status(500).json({ error }))
+        .catch((error) => res.status(500).json({ error: error.message }))
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(500).json({ error: error.message }));
 };
 //////supprimer une publication
 exports.deletePublication = (req, res, next) => {

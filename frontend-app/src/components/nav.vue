@@ -22,14 +22,7 @@
         id="dropdownMenuButton"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-      >
-        <img
-          class="card-img-circle"
-          src="../assets/image/profil.jpeg"
-          width="40px"
-          height="40px"
-        />
-      </button>
+      ></button>
 
       <ul class="dropdown-menu">
         <li class="dropdown-item" href="#">
@@ -48,37 +41,31 @@
           <div id="name">{{ user.nom }} {{ user.prenom }}</div>
         </li>
 
-        <li @click="goLogin()">
-          <a class="dropdown-item"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-power"
-              viewBox="0 0 16 16"
-            >
-              <path d="M7.5 1v7h1V1h-1z" />
-              <path
-                d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"
-              />
-            </svg>
+        <li class="dropdown-item" @click="goLogin()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-power"
+            viewBox="0 0 16 16"
+          >
+            <path d="M7.5 1v7h1V1h-1z" />
+            <path
+              d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"
+            />
+          </svg>
 
-            Déconnexion</a
-          >
+          Déconnexion
         </li>
-        <li>
-          <!-- <a @click="supprimerCompte()" class="dropdown-item text-danger"
-            ><i class="bi bi-trash"></i> Supprimer le compte</a
-          > -->
-          <button
-            class="btn text-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModalCenter"
-          >
-            <i class="bi bi-trash"></i>
-            Supprimer le compte
-          </button>
+
+        <li
+          class="dropdown-item text-danger"
+          data-bs-toggle="modal"
+          @click="modalConfirm.show()"
+        >
+          <i class="bi bi-trash"></i>
+          Supprimer le compte
         </li>
       </ul>
     </div>
@@ -86,6 +73,7 @@
     <div
       class="modal fade"
       id="exampleModalCenter"
+      ref="modalConfirm"
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
@@ -97,15 +85,6 @@
             <h5 class="modal-title" color="red" id="exampleModalLongTitle">
               La suppression du compte
             </h5>
-
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
           </div>
           <div class="modal-body">
             Êtes-vous sur de vouloir supprimer votre compte?
@@ -114,7 +93,7 @@
             <button
               type="button"
               class="btn btn-warning"
-              data-bs-dismiss="modal"
+              @click="modalConfirm.hide()"
             >
               Non
             </button>
@@ -122,7 +101,6 @@
               @click="supprimerCompte()"
               type="button"
               class="btn btn-danger"
-              data-bs-dismiss="modal"
             >
               Oui
             </button>
@@ -134,15 +112,20 @@
 </template>
 
 <script>
+import { Modal } from "bootstrap";
 export default {
   name: "Nav",
   data() {
     return {
+      modalConfirm: null,
       user: {
         nom: localStorage.getItem("nom"),
         prenom: localStorage.getItem("prenom"),
       },
     };
+  },
+  mounted() {
+    this.modalConfirm = new Modal(this.$refs.modalConfirm);
   },
   props: {},
   methods: {
@@ -164,6 +147,7 @@ export default {
     supprimerCompte() {
       this.$http.delete(`/api/auth/user`).then(() => {
         console.log("publication supprimer");
+        this.modalConfirm.hide();
         this.goLogin();
       });
     },
@@ -196,6 +180,10 @@ export default {
 .dropdown-menu {
   box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%),
     0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+  position: absolute;
+  inset: 15px 0px auto auto;
+  margin: 0px;
+  transform: translate3d(5px, 26px, 0px);
 }
 .dropdown-item {
   display: flex;
@@ -207,5 +195,31 @@ export default {
 }
 i {
   padding-left: 0.5px;
+}
+@media (max-width: 699px) {
+  .btn-secondary {
+    padding: 0;
+    width: 21px;
+  }
+  .dropdown-menu show {
+    inset: auto;
+    transform: none;
+  }
+}
+@media (max-width: 462px) {
+  .navbar-brand {
+    font-size: 13px;
+    margin-right: 0;
+    padding: 0;
+  }
+  img {
+    width: 18px;
+  }
+}
+@media (min-width: 277px) and (max-width: 298px) {
+  .dropdown-menu {
+    inset: auto !important;
+    transform: none;
+  }
 }
 </style>

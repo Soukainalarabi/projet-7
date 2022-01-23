@@ -16,38 +16,31 @@
         {{ publication.user.nom + " " + publication.user.prenom }}
       </div>
       <div class="col-auto">{{ publication.createdAt }}</div>
-
       <div class="col">
-        <div
-          v-if="publication.user.id == userId"
-          class="dropdown padding-left: 89%"
-        >
+        <div v-if="publication.user.id == userId" class="dropdown">
           <button
             class="btn-secondary"
             type="button"
             id="dropdownMenuButton1"
             data-bs-toggle="dropdown"
             aria-expanded="false"
+            style="padding: 0px"
           >
             <i class="bi bi-three-dots"></i>
           </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li>
-              <a
-                class="dropdown-item text-danger"
-                @click="openModalModification(publication)"
-              >
-                modifier</a
-              >
+          <ul class="dropdown-menu">
+            <li
+              class="dropdown-item"
+              @click="openModalModification(publication)"
+            >
+              modifier
             </li>
 
-            <li>
-              <a
-                @click="supprimerPub(publication.id)"
-                class="dropdown-item text-danger"
-              >
-                Supprimer</a
-              >
+            <li
+              @click="supprimerPub(publication.id)"
+              class="dropdown-item text-danger"
+            >
+              Supprimer
             </li>
           </ul>
         </div>
@@ -106,12 +99,35 @@
               <!-- //////il faut ajouter un nom et un prénom pour les commentaires -->
               {{ commentaire.user.nom + " " + commentaire.user.prenom }}</span
             >
-            <small class="comment-text">{{ commentaire.commentaire }}</small>
+            <small v-show="commentaire.showCommentaire" class="comment-text">{{
+              commentaire.commentaire
+            }}</small>
+            <div style="width: 100%" v-show="!commentaire.showCommentaire">
+              <div class="d-flex flex-row ml-2 comment-text">
+                <textarea
+                  id="story"
+                  v-model="commentaire.commentaire"
+                  name="story"
+                  data-bs-spy="scroll"
+                  placeholder="Ecrivez un commentaire..."
+                >
+                </textarea>
+                <button
+                  class="btn-sm btn-primary"
+                  type="submit"
+                  @click="modifierCommentaire(commentaire, publication.id)"
+                >
+                  publier
+                </button>
+              </div>
+            </div>
             <div class="flex-row align-items-center status">
-              <small>{{ commentaire.createdAt }} </small>
+              <small class="date">{{ commentaire.createdAt }} </small>
 
               <small v-if="commentaire.user.id == userId">
-                <button @click="supprimer(idCom)">Modifier</button>
+                <button @click="commentaire.showCommentaire = false">
+                  Modifier
+                </button>
               </small>
               <small v-if="commentaire.user.id == userId">
                 <button @click="supprimerCom(commentaire.id, publication.id)">
@@ -136,26 +152,19 @@
               id="story"
               v-model="publication.commentaireModel"
               name="story"
+              data-bs-spy="scroll"
+              placeholder="Ecrivez un commentaire..."
             >
-Ecrivez un commentaire... </textarea
+            </textarea>
+            <button
+              class="btn-sm btn-primary"
+              type="submit"
+              @click="
+                envoyerCommentaire(publication.id, publication.commentaireModel)
+              "
             >
-            <ul class="list-group list-group-vertical">
-              <li class="list-group-item">
-                <span
-                  aria-label="Insérez une image"
-                  class="d-flex align-items-end btn-file"
-                >
-                  <button
-                    @click="
-                      publier(publication.id, publication.commentaireModel)
-                    "
-                  >
-                    publier
-                  </button>
-                </span>
-                <!-- picture -->
-              </li>
-            </ul>
+              publier
+            </button>
           </div>
         </div>
       </div>
@@ -207,6 +216,7 @@ export default {
               com.createdAt,
               this.$datetimeFormat
             ).fromNow();
+            com.showCommentaire = true;
           });
         });
       })
@@ -232,13 +242,10 @@ export default {
         (a, b) => b.creationDate - a.creationDate
       );
     },
-    publier: function (pubId, commentaire) {
-      let comntModel = "Ecrivez un commentaire...";
+    envoyerCommentaire: function (pubId, commentaire) {
       let publication = this.publications.find((pub) => pub.id == pubId);
-      if (
-        !publication.commentaireModel ||
-        publication.commentaireModel == comntModel
-      ) {
+      if (!publication.commentaireModel) {
+        // on n'envoie pas un commentaire vide
         return;
       }
       this.$http
@@ -251,6 +258,7 @@ export default {
             commentaire: commentaire,
             creationDate: Date.now(),
             createdAt: moment(Date.now()).fromNow(),
+            showCommentaire: true,
             user: {
               id: this.userId,
               image: localStorage.getItem("userImage"),
@@ -259,7 +267,20 @@ export default {
             },
           });
 
-          publication.commentaireModel = comntModel;
+          publication.commentaireModel = "";
+        });
+    },
+    modifierCommentaire: function (commentaire, pubId) {
+      if (!commentaire.commentaire.trim()) {
+        // on n'envoie pas un commentaire vide
+        return;
+      }
+      this.$http
+        .put(`/api/publications/${pubId}/commentaire/${commentaire.id}`, {
+          text: commentaire.commentaire,
+        })
+        .then(() => {
+          commentaire.showCommentaire = true;
         });
     },
     supprimerCom: function (idCommentaire, pubId) {
@@ -307,6 +328,15 @@ hr {
 .dropdown {
   padding-left: 89%;
 }
+/* //////////////////// */
+.dropdown-menu {
+  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%),
+    0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%);
+  position: absolute;
+  inset: 15px 0px auto auto;
+  margin: 0px;
+  transform: translate3d(5px, 26px, 0px);
+}
 .col-9 {
   padding-left: 0px;
 }
@@ -322,7 +352,7 @@ hr {
 }
 .card-img {
   width: 100% !important;
-  height: auto;
+  height: 500px;
 }
 .card-img-circle {
   border-radius: 48%;
@@ -340,6 +370,11 @@ hr {
 .comments {
   margin-top: 1%;
 }
+.btn-sm {
+  background-color: blue !important;
+  margin-top: auto;
+  margin-bottom: auto;
+}
 button {
   border: none;
   background-color: white;
@@ -356,18 +391,10 @@ span input {
 }
 .btn-file input[type="file"] {
   position: absolute;
-  /* top: 0;
-  right: 0;
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 100px;
-  text-align: right; */
   cursor: pointer !important;
-
   filter: alpha(opacity=0);
   opacity: 0;
   outline: none;
-
   display: block;
 }
 textarea {
@@ -389,7 +416,7 @@ li {
   align-items: center !important;
 }
 .d-flex {
-  margin-left: 6px;
+  margin-left: 2px;
   align-items: flex-start;
   width: 100%;
   justify-content: space-between;
@@ -425,12 +452,45 @@ i {
 @media (max-width: 699px) {
   .d-flex {
     display: flex !important;
-    flex-direction: column;
+    /* flex-direction: column; */
+  }
+  .row {
+    margin-top: 0;
+  }
+  .row > * {
+    margin-left: 0;
   }
   .card {
     width: 100% !important;
     margin-right: 0;
     margin-left: 0;
+  }
+  .card-img-circle {
+    width: 20px;
+    height: 27px;
+  }
+}
+@media (min-width: 700px) and (max-width: 2400px) {
+  .card {
+    width: 70%;
+  }
+}
+@media (max-width: 300px) {
+  .row > * {
+    padding-left: 0;
+  }
+}
+@media (max-width: 390px) {
+  button {
+    font-size: 12px;
+    margin-right: 0px;
+    padding: 2px;
+  }
+  .status small[data-v-5c8289c0] {
+    margin-right: 0px;
+  }
+  .date {
+    font-size: 8px;
   }
 }
 </style>

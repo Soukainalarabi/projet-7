@@ -192,10 +192,7 @@ export default {
       this.image = "";
     },
     //modal dismis ////////
-    save() {
-      /* $("#ModalId").modal("hide");
-      this.$emit("save");*/
-    },
+
     openModal: function () {
       this.modal.show();
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <form class="form-signin">
+    <div class="form-signin">
       <div class="shadow p-3 mb-5 bg-body rounded">
         <img
           class="mb-4"
@@ -45,17 +45,13 @@
           >
             Se Connecter
           </button>
-          <button
-            class="btn btn-outline-secondary"
-            type="submit"
-            @click="goToHome()"
-          >
+          <button class="btn btn-outline-secondary" @click="goToHome()">
             S'Inscrire
           </button>
         </div>
         <p class="mt-5 mb-3 text-muted">&copy; 2021-2022</p>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 <script>

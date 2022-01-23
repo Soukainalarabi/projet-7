@@ -30,7 +30,6 @@ function mapCommentaires(commentaires) {
         result.push({
             id: commentaire.id,
             commentaire: commentaire.text,
-            image: commentaire.image,
 
             createdAt: commentaire.createdAt,
 

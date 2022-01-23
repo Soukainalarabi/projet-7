@@ -14,31 +14,31 @@ const sequelize = new Sequelize(
   }
 );
 module.exports = sequelize;
-const USER_ALIAS="user";
+const USER_ALIAS = "user";
 const User = UserModel(sequelize, Sequelize);
 const Commentaire = CommentaireModel(sequelize, Sequelize);
 const Publication = PublicationModel(sequelize, Sequelize);
 Publication.belongsTo(User, {
   as: USER_ALIAS,
-  foreignKey: "idUser",
+  foreignKey: "userId",
 }); // publication();
 //User.hasMany(Publication)//user.getPublications();
 Publication.hasMany(Commentaire, {
   as: "commentaires",
-  foreignKey: {name:"idPublication", allowNull:false},
+  foreignKey: { name: "idPublication", allowNull: false },
   onDelete: 'cascade',
-  hooks:true
+  hooks: true
 });
 Commentaire.belongsTo(User, {
   as: USER_ALIAS,
-  foreignKey: "idUser",
+  foreignKey: "userId",
 });
 
 /*Commentaire.belongsTo(Publication, {
   as: "publication",
   foreignKey: "idPublication",
 });*/
-sequelize.sync({alter:true}).then(() => {
+sequelize.sync({ alter: true }).then(() => {
   console.log(`Database & tables created!`);
 });
 module.exports = {
