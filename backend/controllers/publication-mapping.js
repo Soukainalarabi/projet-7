@@ -43,8 +43,7 @@ function mapCommentaires(commentaires) {
         })
 
     }
-    // for com of commentaires
-    // result.push()
+   
 
     return result;
 }

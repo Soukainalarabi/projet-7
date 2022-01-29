@@ -35,7 +35,6 @@ exports.createCommentaire = (req, res, next) => {
   Commentaire.create({
     text: req.body.text,
     idPublication: req.params.id,
-    // image: `/images/${req.file.filename}`,
     userId: req.userId
   })
     .then((com) => {

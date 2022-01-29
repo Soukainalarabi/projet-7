@@ -83,7 +83,6 @@
 </template>
 <script>
 export default {
-  props: ["nextUrl"],
   data() {
     return {
       firstName: "",

@@ -21,12 +21,11 @@ const Publication = PublicationModel(sequelize, Sequelize);
 Publication.belongsTo(User, {
   as: USER_ALIAS,
   foreignKey: "userId",
-}); // publication();
-//User.hasMany(Publication)//user.getPublications();
+}); 
 Publication.hasMany(Commentaire, {
   as: "commentaires",
   foreignKey: { name: "idPublication", allowNull: false },
-  onDelete: 'cascade',
+  onDelete: 'cascade',//si une publication est supprimé ces commentaires le seront aussi
   hooks: true
 });
 Commentaire.belongsTo(User, {
@@ -34,10 +33,7 @@ Commentaire.belongsTo(User, {
   foreignKey: "userId",
 });
 
-/*Commentaire.belongsTo(Publication, {
-  as: "publication",
-  foreignKey: "idPublication",
-});*/
+//Pour se connecter et initialiser la base de données
 sequelize.sync({ alter: true }).then(() => {
   console.log(`Database & tables created!`);
 });

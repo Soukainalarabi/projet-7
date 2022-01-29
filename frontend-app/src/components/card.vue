@@ -474,6 +474,9 @@ i {
   .card {
     width: 70%;
   }
+  .row > * {
+    margin-left: 0;
+  }
 }
 @media (max-width: 300px) {
   .row > * {
@@ -490,7 +493,7 @@ i {
     margin-right: 0px;
   }
   .date {
-    font-size: 8px;
+    font-size: 6px;
   }
 }
 </style>

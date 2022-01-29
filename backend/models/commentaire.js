@@ -1,3 +1,4 @@
+//Définir le model commentaire dans sequelize
 module.exports = (sequelize, type) => {
   return sequelize.define(
     "commentaire",
@@ -10,7 +11,6 @@ module.exports = (sequelize, type) => {
         unique: true,
       },
       text: { type: type.TEXT, field: "text" },
-      image: { type: type.STRING(255), field: "image" },
 
     },
     {

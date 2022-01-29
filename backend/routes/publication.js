@@ -4,7 +4,7 @@ const auth = require("../middleware/auth"); //pour proteger nos routes
 
 const pubCtrl = require("../controllers/publication");
 const multer = require("../middleware/multer-config");
-//si on place le multer avant l'auth tous  les images seront enregister dans le serveur meme les images non authentifiées
+//si on place le multer avant l'auth toutes les images seront enregistées dans le serveur meme les images non authentifiées
 router.get("/:id", auth, pubCtrl.getOnePublication);
 router.get("/", auth, pubCtrl.getAllPublications);
 

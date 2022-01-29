@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken"); //ce package va nous permettre de creer les
 const { Publication, User, Commentaire } = require("../sequelize");
 
 
-//la fonction signup:pour l'enregistrement des nv utilisateurs
+//la fonction signup:pour l'enregistrement des Nv utilisateurs
 exports.signup = (req, res, next) => {
   const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 

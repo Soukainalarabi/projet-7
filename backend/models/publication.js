@@ -1,3 +1,6 @@
+//Définir le model publication dans sequelize
+
+
 module.exports = (sequelize, type) => {
   return sequelize.define(
     "publication",

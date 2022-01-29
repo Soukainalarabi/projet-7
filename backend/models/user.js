@@ -1,3 +1,5 @@
+//Définir le model user dans sequelize
+
 module.exports = (sequelize, type) => {
   return sequelize.define(
     "user",
@@ -12,7 +14,7 @@ module.exports = (sequelize, type) => {
       nom: { type: type.STRING(256), field: "nom" },
       prenom: { type: type.STRING(256), field: "prenom" },
 
-      email: { type: type.STRING(256), field: "email", unique: true },
+      email: { type: type.STRING(256), field: "email", unique: true },// l'email est unique
       pwd: { type: type.STRING(256), field: "pwd" },
       image: { type: type.STRING(700), field: "image" },
 
