@@ -32,6 +32,10 @@ exports.createPublication = (req, res, next) => {
 };
 //////creer un commentaire
 exports.createCommentaire = (req, res, next) => {
+  if (!req.body.text || !req.body.text.trim()) {
+    res.status(400).json({ message: "le commentaire ne devrait pas être vide" });
+    return;
+  }
   Commentaire.create({
     text: req.body.text,
     idPublication: req.params.id,
@@ -115,6 +119,10 @@ exports.modifyPublication = (req, res, next) => {
       }
       if (!req.body.title || !req.body.title.trim()) {
         res.status(400).json({ message: "le titre ne devrait pas être vide" });
+        return;
+      }
+      if (!req.body.text || !req.body.text.trim()) {
+        res.status(400).json({ message: "le texte ne devrait pas être vide" });
         return;
       }
       let publicationToUpdate = {
