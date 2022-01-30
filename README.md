@@ -1,11 +1,11 @@
 # Prérequis d'installation:
 
-- "npm" : Le gestionnaire de paquets par défaut pour Node.js
-- Un base des donnnées Msql démarré.
+- "npm" : Le gestionnaire de paquets par défaut de Node.js
+- Une base de données Msql démarrée.
 
 # Installation:
 
--Récuperer depuis Github le repository du projet.
+-Récupérer depuis Github le repository du projet.
 
 ## Backend
 
