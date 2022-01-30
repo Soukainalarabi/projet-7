@@ -1,11 +1,11 @@
 # Prérequis d'installation:
 
-- "npm" : le gestionaire de paquets officek pour Node.js
+- "npm" : Le gestionnaire de paquets par défaut pour Node.js
 - Un base des donnnées Msql démarré.
 
 # Installation:
 
--Récuperer depuis github le repository du projet.
+-Récuperer depuis Github le repository du projet.
 
 ## Backend
 
@@ -16,8 +16,8 @@
 npm install
 ```
 
-- Créer une nouvelle base des données dans l'instance Mysql.
-- Configurer dans le fichier conf l'acces de la base des données Mysql.
+- Créer une nouvelle base de données dans l'instance Mysql.
+- Configurer dans le fichier config l'accès de la base de données Mysql.
 
 ```json
 {
@@ -32,7 +32,7 @@ npm install
 ```
 
 - Démarrer le service backend en executant la commande suivante depuis le dossier ./backend
-  Il faut etre dans le chemin du projet ./backend afin d'exécuter le service backend
+  Il faut être dans le chemin du projet ./backend afin d'exécuter le service backend
 
 ```bash
 npm start
@@ -41,7 +41,7 @@ npm start
 ## frontend-app
 
 - Aller vers le dossier ./frontend-app.
-- si on a pas vue-cli installé dans la machine exécuter la commande suivante:
+- si on a pas vue-cli installé le dans la machine en exécutant la commande suivante:
 
 ```bash
 npm install -g @vue/cli
@@ -64,5 +64,5 @@ Aller à l'url http://localhost:port/#/login et créer un nouveau compte.
 
 ##### A noter
 
-- si le port ou l'adresse ip de l'instance backend sont changés, il faut configurer la nouvelle adresse dans
+- si le port ou l'adresse IP de l'instance backend sont changées, il faut configurer la nouvelle adresse dans
   frontend-app/assets/config/config.json.
