@@ -1,3 +1,4 @@
+//ici c'est les éléments qu'on va récupérer si on veut afficher une publication 
 mapPublication = function (publication) {
     return {
         id: publication.id,
@@ -23,6 +24,7 @@ mapPublications = function (publications) {
 
     } return result;
 }
+//ici c'est les éléments qu'on va récupérer si on veut afficher un commentaire 
 function mapCommentaires(commentaires) {
     let result = [];
 
@@ -43,7 +45,7 @@ function mapCommentaires(commentaires) {
         })
 
     }
-   
+
 
     return result;
 }

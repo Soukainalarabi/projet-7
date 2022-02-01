@@ -32,6 +32,7 @@ exports.createPublication = (req, res, next) => {
 };
 //////creer un commentaire
 exports.createCommentaire = (req, res, next) => {
+  /////Si un commentaire est vide ou contient des espaces il ne sera pas envoyer
   if (!req.body.text || !req.body.text.trim()) {
     res.status(400).json({ message: "le commentaire ne devrait pas être vide" });
     return;
@@ -56,6 +57,7 @@ exports.createCommentaire = (req, res, next) => {
 //recuperer toutes les publications
 exports.getAllPublications = (req, res, next) => {
   Publication.findAll({
+    ///on va récupérer les publication par ordre décroissant selon la date de leur création
     order: [["createdAt", "DESC"]],
     include: [{ model: User, as: USER_ALIAS },
     {
@@ -72,7 +74,7 @@ exports.getAllPublications = (req, res, next) => {
       });
     });
 };
-//recuperer une publication
+//récupérer une publication
 exports.getOnePublication = (req, res, next) => {
   Publication.findOne(
     {
@@ -141,7 +143,7 @@ exports.modifyPublication = (req, res, next) => {
         })
         .then(() => res.status(200).json({
           message: "La publication est modifiée",
-          //on retourne l'image de la publication qu'on a modifié si elle est saisi sinon on récupère l'ancienn image stockée dans la base des données
+          //on retourne l'image de la publication qu'on a modifié si elle est saisi sinon on récupère l'ancienne image stockée dans la base des données
           image: publicationToUpdate.image ? publicationToUpdate.image : publication.image
         }))
         .catch((error) => res.status(500).json({ error }));
