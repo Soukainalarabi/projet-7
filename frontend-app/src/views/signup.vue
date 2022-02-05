@@ -89,8 +89,6 @@ export default {
       lastName: "",
       email: "",
       pwd: "",
-      // pwd_confirmation: "",
-      is_admin: null,
       error: {
         pwdNoValid: false,
 
@@ -110,7 +108,6 @@ export default {
       };
       e.preventDefault();
       let url = "http://localhost:3000/api/auth/signup";
-      //let isValid = true;
       //Validation des données :
       if (!this.pwd || this.pwd.length < 6) {
         this.error.pwdNoValid = true;

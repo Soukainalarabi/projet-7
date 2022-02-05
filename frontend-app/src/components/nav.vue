@@ -129,14 +129,8 @@ export default {
   },
   props: {},
   methods: {
-    // deleteFind: function (index) {
-    //   console.log(index);
-    //   console.log(this.finds);
-    //   this.finds.splice(index);
-    // },
-
     goLogin() {
-      //vider local storage
+      //On vide "local storage" en cliquant sur déconnexion
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
       localStorage.removeItem("userImage");
@@ -146,8 +140,7 @@ export default {
     },
     supprimerCompte() {
       this.$http.delete(`/api/auth/user`).then(() => {
-        console.log("publication supprimer");
-        this.modalConfirm.hide();
+        this.modalConfirm.hide(); //pour fermer le modal
         this.goLogin();
       });
     },
@@ -161,7 +154,7 @@ export default {
   background-color: white !important;
 }
 .navbar-light .navbar-brand {
-  color: #ffd8d8;
+  color: #9f323d;
 }
 .navbar-brand {
   border: none;
@@ -174,8 +167,8 @@ export default {
 }
 .btn-secondary {
   color: #fff;
-  background-color: #fee0e0;
-  border-color: #fee0e0;
+  background-color: #9f323d;
+  border-color: #9f323d;
 }
 .dropdown-menu {
   box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 20%),

@@ -85,6 +85,7 @@ export default {
   name: "Publication",
   props: {},
   mounted() {
+    //initialiser le modal
     this.modal = new Modal(this.$refs.exampleModal);
   },
   data() {
@@ -129,7 +130,9 @@ export default {
       };
 
       this.imageFile = null;
-      this.$emit("publicationCreated", publicationToAdd);
+      //notifier le parent (nav ) que la publication est crée 
+      //en envoyant notre propre event : publicationCreated
+      this.$emit("publicationCreated", publicationToAdd); 
 
       //réinitialiser les params de modal
       this.pubId = null;
@@ -151,7 +154,7 @@ export default {
       if (!publication.title && !publication.text) {
         return;
       }
-
+//Envoyer des données dans un FormData
       const formData = new FormData();
       formData.append("text", this.text);
       formData.append("title", this.title);
@@ -178,7 +181,6 @@ export default {
       this.createImage(files[0]);
     },
     createImage(file) {
-      // var image = new Image();
       this.imageFile = file;
       var reader = new FileReader();
       var self = this;

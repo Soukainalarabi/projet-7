@@ -88,7 +88,7 @@ export default {
             localStorage.setItem("userId", response.data.userId);
 
             if (localStorage.getItem("token") != null) {
-              this.$emit("loggedIn");
+              this.$emit("loggedIn"); //a supprimé
               this.$router.push("accueil");
             }
           })

@@ -171,6 +171,7 @@
     </div>
   </div>
   <Publication
+  
     ref="publicationModal"
     @publicationCreated="addPublication($event)"
   />
@@ -200,8 +201,8 @@ export default {
         self.publications = publications.data;
         self.publications.forEach((pub) => {
           pub.commentaireModel = "Ecrivez un commentaire...";
-          pub.postCommentShow = false; // pour afficher juste le commrntaire de la publication
-          pub.showModal = false;
+          pub.postCommentShow = false; // pour afficher juste le commrntaire de la publication concerner
+          pub.showModal = false;//ne pas afficher tous les commentaires par défaut
           pub.creationDate = moment(
             pub.createdAt,
             this.$datetimeFormat
@@ -216,6 +217,7 @@ export default {
               com.createdAt,
               this.$datetimeFormat
             ).fromNow();
+            //un flag qui controle l'affichage soit du commentaire ou textInput
             com.showCommentaire = true;
           });
         });
@@ -224,20 +226,24 @@ export default {
   },
   data: function () {
     return {
-      showModal: false,
+      showModal: false,//ne pas afficher tous les commentaires par défaut
       userImageUrl: "",
       userId: "",
       publications: [],
     };
   },
   methods: {
+    /**
+     * en cliquant sur modifier on sera diriger vers le modal de publication(publication.vue)
+     * */
     openModalModification: function (publication) {
       this.$refs.publicationModal.openModalModification(publication);
     },
     addPublication: function (publication) {
       let newPublications = this.publications
-        .filter((pub) => pub.id != publication.id)
+        .filter((pub) => pub.id != publication.id) //on  supprime l'ancienne version de la publication et on ajoute la nouvelle version de la publication modifiée
         .concat([publication]);
+        //On trie les publication par la date la plus récente (modification)
       this.publications = newPublications.sort(
         (a, b) => b.creationDate - a.creationDate
       );
@@ -267,7 +273,7 @@ export default {
             },
           });
 
-          publication.commentaireModel = "";
+          publication.commentaireModel = "";//apres l'envoie du commentaire on l'initialise
         });
     },
     modifierCommentaire: function (commentaire, pubId) {
