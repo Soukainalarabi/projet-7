@@ -1,15 +1,25 @@
-const CompressionPlugin = require('compression-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin')
 
 module.exports = {
     configureWebpack: {
         plugins: [
             new CompressionPlugin({
-                filename: '[path].gz[query]',
-                algorithm: 'gzip',
-                test: /\.(js|css|html|svg)$/,
-                threshold: 10240,
-                minRatio: 0.8
+                filename: '[path][base].br',
+                algorithm: 'brotliCompress',
+                test: /\.js$/,
             })
         ]
+    },
+    devServer: {
+        onBeforeSetupMiddleware({ app }) {
+            app.use('*.js', (req, res, next) => {
+                if (req.get('Accept-Encoding')?.includes('br')) {
+                    req.url += '.br'
+                    res.set('Content-Encoding', 'br')
+                    res.set('Content-Type', 'application/javascript; charset=utf-8')
+                }
+                next()
+            })
+        }
     }
 }
